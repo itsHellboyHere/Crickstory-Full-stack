@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Confirm your CrickStory email</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            padding: 40px 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: #0ea5e9;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .button:hover {
+            background-color: #0284c7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Hello {{ user.username }},</h2>
+        <p>
+            Thanks for signing up for <strong>CrickStory</strong>! Please verify your email address by clicking the
+            button below.
+        </p>
+        <p>
+            This step helps us secure your account and make sure it's really you.
+        </p>
+        <a class="button" href="{{ activate_url }}">Verify Email</a>
+        <p>If the button above doesn't work, you can also copy and paste this link into your browser:</p>
+        <p><a href="{{ activate_url }}">{{ activate_url }}</a></p>
+        <p class="footer">
+            If you didn’t request this, you can safely ignore this email.<br />
+            &copy; {{ current_year }} CrickStory. All rights reserved.
+        </p>
+    </div>
+</body>
+
+</html>

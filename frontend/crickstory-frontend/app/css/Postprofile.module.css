@@ -1,0 +1,115 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    margin: 0 auto;
+    max-width: 64rem;
+}
+
+/* .editButtonWrap,.followButtonWrap {
+    margin-top: 1rem;
+    margin-bottom: 2.5rem;
+    padding-left: 8px;
+} */
+
+.postGridWrap {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    
+}
+
+.postGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    padding: 0;
+
+    width: 100%;
+  
+}
+.sectionTitle{
+    font-size: 1.5rem;
+    
+}
+.card {
+    width: 100%;
+    aspect-ratio: 1/1; 
+    border: 1px solid #ddd;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s ease-out;
+}
+
+.hoverOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.card:hover .hoverOverlay {
+    opacity: 1;
+}
+
+.dynamicLink {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+/* For very small screens */
+@media (max-width: 400px) {
+    .container {
+        padding: 0.5rem;
+    }
+}
+
+/* Optional: Add this if you want to limit the maximum width on larger screens */
+@media (min-width: 768px) {
+    /* .container {
+        padding: 2rem 4rem;
+    } */
+}
+
+/* Follow stats styling */
+.followStats {
+    display: flex;
+    gap: 2rem;
+    margin: 1rem 0;
+  }
+  
+  .followStat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .followCount {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .followLabel {
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  /* Button container styling */
+  /* .followButtonWrap, .editButtonWrap {
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+  } */

@@ -1,0 +1,221 @@
+/* Base hero styles */
+.hero {
+    position: relative;
+    height: 80vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    margin-bottom: 0; 
+  }
+  
+  /* Background with cricket texture */
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3)),
+      url('/bg-2.jpg') center/cover;
+    z-index: -1;
+  }
+  /* Background Slideshow Styles */
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  
+  .backgroundImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: opacity 1.5s ease-in-out;
+  }
+  
+  .backgroundImage.active {
+    opacity: 1;
+    z-index: 1;
+  }
+  
+  .backgroundImage.inactive {
+    opacity: 0;
+    z-index: 0;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.7) 0%,
+      rgba(0, 0, 0, 0.3) 100%
+    );
+    z-index: 2;
+  }
+  .content {
+    max-width: 800px;
+    padding: 0 2rem;
+    z-index: 2;
+  }
+  
+  .title {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+  
+  .highlight {
+    color: #fbbf24; 
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  .subtitle {
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    opacity: 0.9;
+    animation: fadeIn 1.5s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 0.9; transform: translateY(0); }
+  }
+  /* Search bar */
+  .searchContainer {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .searchInput {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .searchInput::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .searchButton {
+    padding: 0 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .searchButton:hover {
+    opacity: 0.8;
+  }
+  
+  /* Buttons */
+  .ctaButtons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  .primaryButton {
+    background: #fbbf24;
+    color: #1e293b;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .secondaryButton {
+    background: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .primaryButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+  }
+  
+  .secondaryButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Shine effect */
+  .buttonShine {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .buttonShine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 40%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.13);
+    transform: rotate(30deg);
+    transition: all 0.5s ease;
+  }
+  
+  .buttonShine:hover::after {
+    left: 120%;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .title {
+      font-size: 2.5rem;
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .ctaButtons {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .searchContainer {
+      margin-bottom: 2rem;
+    }
+  }

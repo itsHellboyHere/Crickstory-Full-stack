@@ -1,0 +1,36 @@
+from django.db import models
+from django.conf import settings
+from django.utils import timezone 
+
+class Follow(models.Model):
+    follower = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='following_set',
+        on_delete=models.CASCADE
+    )
+    following = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name='followers_set',
+        on_delete=models.CASCADE
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    unfollowed_at = models.DateTimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('follower', 'following')
+        ordering = ['-created_at']
+
+    def unfollow(self):
+        self.is_active = False
+        self.unfollowed_at = timezone.now()
+        self.save()
+
+    def follow(self):
+        self.is_active = True
+        self.unfollowed_at = None
+        self.save()
+
+    def __str__(self):
+        status = "Following" if self.is_active else f"Unfollowed on {self.unfollowed_at}"
+        return f"{self.follower.username} → {self.following.username} ({status})"

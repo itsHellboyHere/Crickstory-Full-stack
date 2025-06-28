@@ -1,0 +1,16 @@
+# Node
+frontend/crickstory-frontend/node_modules
+
+# Python
+backend/__pycache__/
+backend/env/
+backend/venv/
+
+# Build
+dist/
+build/
+
+# IDEs
+*.log
+*.pyc
+.env

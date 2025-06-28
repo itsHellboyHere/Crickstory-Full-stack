@@ -1,0 +1,198 @@
+/* Navbar Container */
+.navbar {
+    background-color: #000;
+    color: white;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 0;
+  }
+  
+  /* Logo */
+  .logo {
+    font-size: 1.3rem;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Desktop Nav Items */
+  .navItems {
+    display: flex;
+    gap: 2rem;
+    margin-left: 3rem;
+    align-items: center;
+  }
+  
+  .navLink {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: opacity 0.2s;
+  }
+  
+  .navLink:hover {
+    opacity: 0.8;
+  }
+  
+  /* Auth Buttons */
+  .authButtons {
+    display: flex;
+    gap: 1rem;
+    margin-left: 2rem;
+  }
+  
+  .loginButton {
+    padding: 0.5rem 1rem;
+    background-color: #d946ef;
+    color: white;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+  }
+  
+  .loginButton:hover {
+    background-color: #c026d3;
+  }
+  
+  .signupButton {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d946ef;
+    color: #d946ef;
+    border-radius: 0.25rem;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+  }
+  
+  .signupButton:hover {
+    background-color: rgba(217, 70, 239, 0.1);
+  }
+  
+  /* User Profile */
+  .userProfile {
+    margin-left: 2rem;
+  }
+  
+  .profileLink {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .profileImage {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .username {
+    font-size: 0.9rem;
+  }
+  
+  /* Mobile Menu Button */
+  .mobileMenuButton {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    right: 2rem;
+    z-index: 20;
+  }
+  
+  .menuIcon {
+    display: block;
+  }
+  
+  /* Mobile Menu Dropdown */
+  .mobileMenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 10;
+    border-top: 1px solid #444;
+  }
+  
+  .mobileNavLink {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .mobileNavLink:hover {
+    opacity: 0.7;
+  }
+  
+  /* Mobile Auth Buttons */
+  .authButtonsMobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #444;
+  }
+  
+  .mobileAuthButton {
+    padding: 0.75rem;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+  }
+  
+  .mobileAuthButton:first-child {
+    background-color: #d946ef;
+    color: white;
+  }
+  
+  .mobileAuthButton:last-child {
+    border: 1px solid #d946ef;
+    color: #d946ef;
+  }
+  
+  /* Mobile User Profile */
+  .userProfileMobile {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #444;
+  }
+  
+  .mobileProfileLink {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .navItems {
+      display: none;
+    }
+  
+    .mobileMenuButton {
+      display: block;
+    }
+  
+    .navbar {
+      justify-content: space-between;
+    }
+  
+    .mobileMenu {
+      display: flex;
+    }
+  }
