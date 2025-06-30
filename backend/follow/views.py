@@ -55,6 +55,23 @@ class UnFollowUserAPIView(APIView):
             return Response({"success":"Unfollowed"},status=200)
         except(User.DoesNotExist, Follow.DoesNotExist):
             return Response({'error': 'Not following.'}, status=400)
+        
+class RemoveFollowerAPIView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self,request, username):
+        try:    
+            follower = User.objects.get(username=username)
+            follow= Follow.objects.get(
+                follower=follower,
+                following= request.user,
+                is_active=True
+            )
+            follow.unfollow()
+            return Response({"success": "Removed follower"}, status=200)
+        except (User.DoesNotExist, Follow.DoesNotExist):
+            return Response({'error': 'This user is not following you.'}, status=400)
+        
 
 class FollowersListAPIView(generics.ListAPIView):
     serializer_class = FollowerDetailSerializer
@@ -92,6 +109,7 @@ class FollowedYouHistoryAPIView(generics.ListAPIView):
             following=self.request.user,
             is_active=False
         ).order_by('-unfollowed_at')
+
 
 class FollowStatusAPIView(APIView):
     permission_classes=[permissions.IsAuthenticated]

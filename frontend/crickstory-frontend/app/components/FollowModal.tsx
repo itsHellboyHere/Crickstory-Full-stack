@@ -41,6 +41,8 @@ export function FollowModal({
         updateFollowing,
         loadMoreFollowers,
         loadMoreFollowing,
+        nextFollowersPage,
+        nextFollowingPage,
 
     } = useFollow()
 
@@ -61,13 +63,15 @@ export function FollowModal({
 
     const handleRemove = async (id: number, userUsername: string) => {
         try {
-            await axios.post(`/api/user/unfollow/${userUsername}/`)
             if (type === 'followers') {
+
+                await axios.post(`/api/user/remove-follower/${userUsername}/`);
                 removeFromFollowers(id)
                 if (isCurrentUser && setCounts) {
                     setCounts(prev => ({ ...prev, followers: prev.followers - 1 }))
                 }
             } else {
+                await axios.post(`/api/user/unfollow/${userUsername}/`);
                 removeFromFollowing(id)
                 if (isCurrentUser && setCounts) {
                     setCounts(prev => ({ ...prev, following: prev.following - 1 }))
@@ -151,16 +155,16 @@ export function FollowModal({
                                 )
                             })}
 
-                            {type && (
+                            {(type === 'followers' && nextFollowersPage) || (type === 'following' && nextFollowingPage) ? (
                                 <li className="text-center">
                                     <Button
-                                        onClick={() =>
-                                            type === 'followers' ? loadMoreFollowers() : loadMoreFollowing()
-                                        }
+                                        onClick={() => (type === 'followers' ? loadMoreFollowers() : loadMoreFollowing())}
                                     >
                                         Load More
                                     </Button>
                                 </li>
+                            ) : (
+                                <li className="text-center text-sm text-gray-400">No more {type}</li>
                             )}
                         </ul>
                     )}

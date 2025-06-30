@@ -3,9 +3,8 @@ from django.urls import path
 from .views import (
     FollowUserAPIView, UnFollowUserAPIView,
     FollowersListAPIView, FollowingListAPIView,
-    FollowedYouHistoryAPIView,
-    FollowCountsAPIView,
-    FollowStatusAPIView
+    FollowedYouHistoryAPIView,FollowStatusAPIView,FollowCountsAPIView,
+    RemoveFollowerAPIView
 )
 
 urlpatterns = [
@@ -14,6 +13,7 @@ urlpatterns = [
     path('followers/<str:username>/', FollowersListAPIView.as_view(), name='followers'),
     path('following/<str:username>/', FollowingListAPIView.as_view(), name='following'),
     path('unfollowed-you/', FollowedYouHistoryAPIView.as_view(), name='unfollowed-you'),
-        path('<str:username>/is-following/', FollowStatusAPIView.as_view(), name='is-following'),
+    path('remove-follower/<str:username>/',RemoveFollowerAPIView.as_view(),name="remove-follower"),
+    path('<str:username>/is-following/', FollowStatusAPIView.as_view(), name='is-following'),
     path('<str:username>/follow-counts/', FollowCountsAPIView.as_view(), name='follow-counts'),
 ]

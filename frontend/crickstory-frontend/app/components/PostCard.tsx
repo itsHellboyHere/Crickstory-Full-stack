@@ -19,7 +19,7 @@ function PostCard({ post, currentUserId }: PostCardProps) {
     const isLiked = post.likes.some(like => like.user.id === currentUserId);
 
     return (
-        <article className="bg-white border border-gray-200 rounded-lg mb-6">
+        <article className={`bg-white border border-gray-200 rounded-lg mb-6 ${styles.postCardContainer}`}>
             {/* Header */}
             <header className="flex items-center p-4">
                 <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
@@ -50,13 +50,13 @@ function PostCard({ post, currentUserId }: PostCardProps) {
             </header>
 
             {/* Image */}
-            <div className="relative aspect-square bg-gray-100">
+            <div className={`relative aspect-square bg-gray-100 ${styles.imageWrapper}`}>
                 <Link href={`/posts/${post.id}`}>
                     <Image
                         src={post.imageUrl}
                         fill
                         alt={post.title}
-                        className="object-cover"
+                        className={`object-cover ${styles.image}`}
                         sizes="(max-width: 768px) 100vw, 50vw"
                     />
                 </Link>

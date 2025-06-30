@@ -23,7 +23,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
   }, [user, loading, pathname, router]);
 
   if (loading || !showUI) {
-    return <div className="flex flex-col justify-center items-center h-screen">
+    return <div className="flex flex-col justify-center items-center h-screen  dark:bg-zinc-900 ">
       <CricketLoader size={100} speed={1.2} />
       <ScoreboardLoader text='6LOADING' />
     </div>;

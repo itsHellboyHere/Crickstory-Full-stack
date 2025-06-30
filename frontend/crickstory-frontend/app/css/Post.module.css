@@ -108,3 +108,20 @@
     }
     
 }
+
+.postCardContainer{
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    
+}
+
+.imageWrapper{
+    overflow: hidden;
+    position: relative;
+}
+
+.image{
+    transition: transform 0.3s ease-in-out;
+}
+.image:hover{
+    transform: scale(1.05);
+}

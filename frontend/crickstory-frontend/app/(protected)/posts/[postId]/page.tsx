@@ -19,6 +19,8 @@ export default function PostPage() {
     const postId = Number(params?.postId);
     const [post, setPost] = useState<Post | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
     const router = useRouter();
 
     useEffect(() => {
@@ -26,8 +28,12 @@ export default function PostPage() {
             try {
                 const res = await axios.get(`/api/posts/${postId}/`);
                 setPost(res.data);
-            } catch (error) {
-                router.replace("/not-found");
+            } catch (err: any) {
+                if (err?.response?.status === 404) {
+                    setError("Post not found.");
+                } else {
+                    setError("Something went wrong. Please try again later.");
+                }
             } finally {
                 setLoading(false);
             }
@@ -46,7 +52,22 @@ export default function PostPage() {
         );
     }
 
-    if (!post) return null;
+    if (error || !post) {
+        return (
+            <main className="min-h-screen flex items-center justify-center">
+                <div className="text-center text-gray-500">
+                    <p className="text-lg font-semibold">{error}</p>
+                    <Link
+                        href="/posts"
+                        className="text-blue-500 hover:underline mt-2 inline-block"
+                    >
+                        Go back to Posts
+                    </Link>
+                </div>
+            </main>
+        );
+    }
+
 
     const isAuthor = user?.username === post.user.username;
     const isSaved = post.saved_by.some(save => save.user.id === user?.id);
@@ -64,7 +85,12 @@ export default function PostPage() {
                 </div>
 
                 {/* Post Content */}
-                <div className="bg-white mb-2 rounded-lg shadow-sm mx-2 mt-2">
+                <div className="bg-white mb-2 rounded-lg shadow-sm mx-2 mt-2"
+                    style={{
+                        boxShadow: "rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px"
+                    }}
+
+                >
                     {/* Author Info with Enhanced Avatar */}
                     <div className="flex items-center p-3">
                         <Link
@@ -158,12 +184,17 @@ export default function PostPage() {
                 </div>
 
                 {/* Comments Section */}
-                <div className="bg-white rounded-lg shadow-sm mx-2 mb-16">
-                    <CommentSection
-                        postId={postId}
-                        initialComments={post.comments}
-                        showAll={true}
-                    />
+                <div className="bg-white rounded-lg shadow-sm mx-2 mb-16 px-4 py-4"
+                    style={{
+                        boxShadow: "rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px, rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px"
+                    }}
+                ><div className="max-h-[45vh] overflow-y-auto scroll-smooth  pr-1">
+                        <CommentSection
+                            postId={postId}
+                            initialComments={post.comments}
+                            showAll={true}
+                        />
+                    </div>
                 </div>
 
                 {/* Author Actions */}
@@ -187,12 +218,19 @@ export default function PostPage() {
             </div>
 
             {/* Desktop View */}
-            <div className="hidden md:flex items-center justify-center min-h-screen p-4">
-                <div className="flex max-w-5xl w-full bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div
+                className="hidden md:flex items-center justify-center min-h-screen p-4"
+
+            >
+                <div className="flex max-w-5xl w-full h-[90vh] bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+                    style={{
+                        boxShadow: "rgba(240, 46, 170, 0.4) -5px 5px, rgba(240, 46, 170, 0.3) -10px 10px, rgba(240, 46, 170, 0.2) -15px 15px, rgba(240, 46, 170, 0.1) -20px 20px, rgba(240, 46, 170, 0.05) -25px 25px"
+                    }}
+                >
                     {/* Left Column - Fixed Height Image */}
-                    <div className="flex-1 flex items-center  justify-center bg-black" style={{ maxHeight: '90vh' }}>
+                    <div className="flex-1 flex items-center h-full justify-center bg-black" style={{ maxHeight: '90vh' }}>
                         {post.imageUrl && (
-                            <div className="relative w-full h-full max-h-[90vh]">
+                            <div className="relative w-full h-full">
                                 <Image
                                     src={post.imageUrl}
                                     fill
@@ -206,7 +244,7 @@ export default function PostPage() {
                     </div>
 
                     {/* Right Column - Scrollable Content */}
-                    <div className="flex-1 max-w-md flex flex-col border-l border-gray-200" style={{ maxHeight: '90vh' }}>
+                    <div className="flex-1 max-w-md flex h-full flex-col border-l border-gray-200" style={{ maxHeight: '90vh' }}>
                         {/* Author Header (Fixed) */}
                         <div className="p-4 border-b border-gray-200 flex items-center">
                             <Link

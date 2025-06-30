@@ -9,8 +9,8 @@ import TagComponent from "../components/TagComponent";
 
 
 export const metadata: Metadata = {
-  title: "CrickStory",
-  description: "Come and Talk about Cricket  join the community ",
+  title: "SportStory",
+  description: "Come and Talk about Sports post your sports moments and higlights and get the reach , join the community ",
 }
 export default async function Home() {
 

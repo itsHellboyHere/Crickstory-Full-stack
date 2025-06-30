@@ -43,6 +43,7 @@ export function FollowToggleButton({
         }
     }
 
+
     return (
 
         <Button onClick={toggleFollow} disabled={loading}>

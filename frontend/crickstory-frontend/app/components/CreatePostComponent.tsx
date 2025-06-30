@@ -21,9 +21,45 @@ const CreatePost: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const inputRef = useRef<HTMLInputElement | null>(null);
     const router = useRouter()
+    const [locationInput, setLocationInput] = useState('')
+    const [location, setLocation] = useState('')
+    const [suggestions, setSuggestions] = useState<string[]>([])
+    const timerRef = useRef<number | null>(null)
+    const [tags, setTags] = useState<string[]>([]);
+    const [tagInput, setTagInput] = useState('');
+
+    // throttled search to Google Places
+    const fetchPlaces = useCallback(async (query: string) => {
+        if (!query) return setSuggestions([])
+        const key = process.env.NEXT_PUBLIC_GOOGLE_PLACES_API_KEY
+        const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&types=(cities)&key=${key}`
+        try {
+            const res = await fetch(`/api/proxy?url=${encodeURIComponent(url)}`)
+            const data = await res.json()
+            const places = data.predictions.map((p: any) => p.description)
+            setSuggestions(places)
+        } catch (err) {
+            console.error('Places API error:', err)
+        }
+    }, [])
+
+    const onLocationChange = (v: string) => {
+        setLocationInput(v)
+        clearTimeout(timerRef.current ?? undefined)
+        timerRef.current = window.setTimeout(() => fetchPlaces(v), 300)
+    }
+
+    const selectLocation = (loc: string) => {
+        setLocation(loc)
+        setLocationInput(loc)
+        setSuggestions([])
+    }
+
     const onCropComplete = useCallback((_: any, croppedAreaPixels: CroppedAreaPixels) => {
         setCroppedAreaPixels(croppedAreaPixels);
     }, []);
+
+
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files.length > 0) {
@@ -94,7 +130,8 @@ const CreatePost: React.FC = () => {
         const formData = new FormData();
         formData.append('title', title);
         formData.append('file', croppedImageBlob, 'cropped.jpg');
-
+        formData.append('location', location)
+        tags.forEach(tag => formData.append('tags', tag));
         try {
             await axios.post('/api/posts/create/', formData, {
                 headers: {
@@ -111,6 +148,17 @@ const CreatePost: React.FC = () => {
         } finally {
             setLoading(false);
         }
+    };
+    const handleAddTag = () => {
+        const newTag = tagInput.trim().toLowerCase();
+        if (newTag && !tags.includes(newTag)) {
+            setTags([...tags, newTag]);
+        }
+        setTagInput('');
+    };
+
+    const handleRemoveTag = (index: number) => {
+        setTags(tags.filter((_, i) => i !== index));
     };
 
     return (
@@ -142,7 +190,63 @@ const CreatePost: React.FC = () => {
                 className="hidden"
                 disabled={loading}
             />
-
+            <div className="mb-4 relative">
+                <label className="block mb-1 text-gray-700">Location</label>
+                <input
+                    type="text"
+                    value={locationInput}
+                    onChange={e => onLocationChange(e.target.value)}
+                    placeholder="Search location..."
+                    className="w-full border rounded p-2"
+                    disabled={loading}
+                />
+                {suggestions.length > 0 && (
+                    <ul className="absolute z-10 bg-white border rounded shadow mt-1 w-full max-h-48 overflow-y-auto">
+                        {suggestions.map((s, i) => (
+                            <li
+                                key={i}
+                                onClick={() => selectLocation(s)}
+                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                            >{s}</li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+            {/* Tag Input */}
+            <div className="mb-4">
+                <label className="block text-gray-700 mb-1">Tags</label>
+                <div className="flex flex-wrap items-center gap-2 border border-gray-300 rounded p-2">
+                    {tags.map((tag, index) => (
+                        <span
+                            key={index}
+                            className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-sm flex items-center"
+                        >
+                            {tag}
+                            <button
+                                type="button"
+                                onClick={() => handleRemoveTag(index)}
+                                className="ml-2 text-blue-500 hover:text-red-500"
+                            >
+                                &times;
+                            </button>
+                        </span>
+                    ))}
+                    <input
+                        type="text"
+                        placeholder="Add a tag"
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={(e) => {
+                            if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
+                                e.preventDefault();
+                                handleAddTag();
+                            }
+                        }}
+                        className="flex-1 border-none focus:ring-0 outline-none"
+                        disabled={loading}
+                    />
+                </div>
+            </div>
             {imageSrc && (
                 <div className="relative w-full h-64 bg-gray-200 mb-4">
                     <Cropper

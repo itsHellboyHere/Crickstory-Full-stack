@@ -45,10 +45,10 @@ export default function Hero() {
 
             <div className={styles.content}>
                 <h1 className={styles.title}>
-                    <span className={styles.highlight}>Crickstory</span> Universe
+                    <span className={styles.highlight}>Sportstory</span> Universe
                 </h1>
                 <p className={styles.subtitle}>
-                    Where cricket lives beyond the field. Share stories, spark rivalries, and celebrate the game we love.
+                    Where sport lives beyond the field. Share stories, spark rivalries, and celebrate the game you love.
                 </p>
 
                 {/* <div className={styles.searchContainer}>

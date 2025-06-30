@@ -16,7 +16,7 @@ export default function HomeNavbar() {
     return (
         <nav className={`${styles.navbar} ${josef.className}`}>
             <div className={styles.logo}>
-                <span className='text-fuchsia-300 underline text-3xl'>crick</span>story
+                <span className='text-fuchsia-300 underline text-3xl'>sport</span>story
             </div>
 
             <div className={styles.navItems}>

@@ -20,6 +20,8 @@ class CreatePostView(APIView):
 
     def post(self,request,*args,**kwargs):
         title = request.data.get('title')
+        tags = request.data.getlist('tags')  
+        location = request.data.get('location')
         image_file = request.FILES.get("file")
 
         if not title:
@@ -49,6 +51,8 @@ class CreatePostView(APIView):
         data={
             "title":title,
             "imageUrl":image_url,
+            "tags": tags,              
+            "location": location 
         }
         serializer= PostCreateSerializer(data=data,context={"request":request})
         if serializer.is_valid():

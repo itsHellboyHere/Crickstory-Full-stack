@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from taggit.managers import TaggableManager
 # Create your models here.
 
 
@@ -7,9 +8,12 @@ class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,related_name='posts',on_delete=models.CASCADE)
     title =models.TextField(max_length=500)
     imageUrl = models.URLField()
+    
+    location = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    tags = TaggableManager(blank=True) 
+    
     class Meta:
         indexes = [
             models.Index(fields=['user']),

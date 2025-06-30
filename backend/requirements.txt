@@ -15,3 +15,5 @@ django-cloudinary-storage
 channels
 channels_redis
 daphne
+django-taggit
+

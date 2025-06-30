@@ -7,7 +7,7 @@ import PostSkeleton from '@/app/components/PostSkeleton';
 import { useAuth } from '@/app/context/AuthContext';
 import { Post } from '@/types/next-auth';
 import Image from 'next/image';
-
+import styles from "@/app/css/Post.module.css"
 export default function PostsPage() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [cursor, setCursor] = useState<string | null>(null);
@@ -105,7 +105,7 @@ export default function PostsPage() {
     };
     return (
         <>
-            <div className="max-w-2xl mx-auto pb-20 mt-4  min-h-screen">
+            <div className={`max-w-2xl mx-auto pb-20 mt-4  min-h-screen `}>
                 <div className="flex justify-center my-4">
                     <button
                         onClick={handleRefresh}
@@ -116,7 +116,7 @@ export default function PostsPage() {
                     </button>
                 </div>
 
-                <div className="space-y-6">
+                <div className={`space-y-6`}>
                     {posts.map(post => (
                         <PostCard
                             key={`post-${post.id}-${post.created_at}`}

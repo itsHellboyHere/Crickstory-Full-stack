@@ -46,19 +46,19 @@ export default function ProfileInfoForm() {
     };
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+        <div className="bg-white  rounded-lg shadow p-6 mb-8">
+            <h2 className="text-2xl font-bold text-gray-800  mb-6">
                 Profile Information
             </h2>
 
             {success && (
-                <div className="mb-4 p-4 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded">
+                <div className="mb-4 p-4 bg-green-100  text-green-800  rounded">
                     Saved successfully!
                 </div>
             )}
 
             {error && (
-                <div className="mb-4 p-4 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded">
+                <div className="mb-4 p-4 bg-red-100  text-red-800  rounded">
                     {error}
                 </div>
             )}
@@ -66,7 +66,7 @@ export default function ProfileInfoForm() {
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Username */}
                 <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="username" className="block text-sm font-medium text-gray-700  mb-1">
                         Username
                     </label>
                     <input
@@ -74,14 +74,14 @@ export default function ProfileInfoForm() {
                         id="username"
                         name="username"
                         defaultValue={profile?.username ?? ''}
-                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 "
                         required
                     />
                 </div>
 
                 {/* Name */}
                 <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                         Full Name
                     </label>
                     <input
@@ -89,13 +89,13 @@ export default function ProfileInfoForm() {
                         id="name"
                         name="name"
                         defaultValue={profile?.name ?? ''}
-                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 "
                     />
                 </div>
 
                 {/* Bio */}
                 <div>
-                    <label htmlFor="bio" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="bio" className="block text-sm font-medium text-gray-700  mb-1">
                         Bio
                     </label>
                     <textarea
@@ -103,14 +103,14 @@ export default function ProfileInfoForm() {
                         name="bio"
                         rows={4}
                         defaultValue={profile?.bio ?? ''}
-                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 "
                         placeholder="Tell us about yourself..."
                     />
                 </div>
 
                 {/* Location */}
                 <div>
-                    <label htmlFor="location" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="location" className="block text-sm font-medium text-gray-700  mb-1">
                         Location
                     </label>
                     <input
@@ -118,14 +118,14 @@ export default function ProfileInfoForm() {
                         name="location"
                         type="text"
                         defaultValue={profile?.location ?? ''}
-                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 "
                         placeholder="Your location"
                     />
                 </div>
 
                 {/* Birth Date */}
                 <div>
-                    <label htmlFor="birth_date" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    <label htmlFor="birth_date" className="block text-sm font-medium text-gray-700 mb-1">
                         Birth Date
                     </label>
                     <input
@@ -133,7 +133,7 @@ export default function ProfileInfoForm() {
                         name="birth_date"
                         type="date"
                         defaultValue={profile?.birth_date ?? ''}
-                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:text-white"
+                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 "
                     />
                 </div>
 

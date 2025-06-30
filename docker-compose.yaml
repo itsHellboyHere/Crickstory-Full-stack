@@ -1,6 +1,25 @@
 version: 'version 3.8'
 
 services:
+  #   django:
+  #     build:
+  #       context: .
+  #       dockerfile: Dockerfile
+  #     container_name: crickstory_app
+  #     command: daphne -b 0.0.0.0 -p 8000 crickstory.asgi:application
+  #     volumes:
+  #       - ./backend:/app 
+  #     ports:
+  #       - "8000:8000"
+  #     depends_on:
+  #       - postgres
+  #       - redis
+  #     env_file:
+  #       - .env
+  #     networks:
+  #       - postgres
+  #     restart: unless-stopped
+
   postgres:
     container_name: postgres_crickstory
     image: postgres:16
@@ -33,6 +52,8 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
+    networks:
+      - postgres 
 
 networks:
   postgres:

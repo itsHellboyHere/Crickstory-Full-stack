@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 export default function NotificationList() {
     const { notifications, markAsSeen } = useNotification();
-    console.log(notifications)
+    // console.log(notifications)
     return (
         <div className="max-w-md mx-auto mt-6 px-4">
             <h2 className="text-xl font-bold mb-4 text-center">Notifications</h2>

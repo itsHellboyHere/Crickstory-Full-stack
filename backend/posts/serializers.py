@@ -4,7 +4,7 @@ from likes.models import Like
 from comments.models import Comment
 from django.contrib.auth import get_user_model
 User = get_user_model()
-
+from taggit.serializers import (TagListSerializerField, TaggitSerializer)
 
 class MiniUserSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -35,11 +35,13 @@ class SavedPostSerializer(serializers.ModelSerializer):
         model = SavedPost
         fields = ['id', 'user', 'created_at']
 
-class FullPostSerializer(serializers.ModelSerializer):
+class FullPostSerializer(TaggitSerializer,serializers.ModelSerializer):
     user = MiniUserSerializer(read_only=True)
     likes = LikeSerializer(many=True, read_only=True)
     comments = CommentSerializer(many=True, read_only=True)
     saved_by = SavedPostSerializer(many=True, read_only=True)
+    tags = TagListSerializerField(read_only=True)
+    location = serializers.CharField(read_only=True)
     class Meta:
         model = Post
         fields = [
@@ -47,6 +49,8 @@ class FullPostSerializer(serializers.ModelSerializer):
             'user',
             'title',
             'imageUrl',
+            'location',
+            'tags',
             'created_at',
             'updated_at',
             'likes',
@@ -55,10 +59,12 @@ class FullPostSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
 
-class PostCreateSerializer(serializers.ModelSerializer):
+class PostCreateSerializer(TaggitSerializer,serializers.ModelSerializer):
+    tags = TagListSerializerField(required=False)
+    location = serializers.CharField(required=False,allow_blank=True)
     class Meta:
         model = Post
-        fields = ['title', 'imageUrl']
+        fields = ['title', 'imageUrl','tags','location']
 
     def validate_title(self, value):
         
@@ -69,7 +75,10 @@ class PostCreateSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         request = self.context.get('request')
         user = request.user if request else None
-        return Post.objects.create(user=user, **validated_data)
+        tags = validated_data.pop('tags', [])
+        post = Post.objects.create(user=user, **validated_data)
+        post.tags.set(tags) 
+        return post
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:

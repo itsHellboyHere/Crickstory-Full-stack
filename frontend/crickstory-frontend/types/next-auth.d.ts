@@ -35,6 +35,8 @@ export interface User {
     saved_by: SavedPost[];
     created_at: string;
     updated_at: string;
+    tags: string[];         
+    location: string | null; 
   }
   
   export interface PostsResponse {

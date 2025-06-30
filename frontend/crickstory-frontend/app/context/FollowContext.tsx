@@ -8,8 +8,8 @@ import React, { createContext, useContext, useState } from "react"
 export interface FollowContextType {
     followers: FollowerItem[]
     following: FollowingItem[]
-    count: number
-    fetchCount: (username: string) => Promise<void>
+    // count: number
+    // fetchCount: (username: string) => Promise<void>
     fetchFollowers: (username: string) => Promise<void>
     fetchFollowing: (username: string) => Promise<void>
     loadMoreFollowers: () => Promise<void>
@@ -27,7 +27,7 @@ const FollowContext = createContext<FollowContextType | undefined>(undefined);
 export function FollowProvider({ children }: { children: React.ReactNode }) {
     const [followers, setFollowers] = useState<FollowerItem[]>([])
     const [following, setFollowing] = useState<FollowingItem[]>([])
-    const [count, setCount] = useState(0)
+    // const [count, setCount] = useState(0)
     const [nextFollowersPage, setNextFollowersPage] = useState<string | null>(null)
     const [nextFollowingPage, setNextFollowingPage] = useState<string | null>(null)
     const fetchFollowers = async (username: string) => {
@@ -52,11 +52,11 @@ export function FollowProvider({ children }: { children: React.ReactNode }) {
         setFollowing(prev => [...prev, ...res.data.results])
         setNextFollowingPage(res.data.next)
     }
-    const fetchCount = async (username: string) => {
-        const res = await axios.get(`/api/user/${username}/follow-counts/`)
-        setCount(res.data)
+    // const fetchCount = async (username: string) => {
+    //     const res = await axios.get(`/api/user/${username}/follow-counts/`)
+    //     setCount(res.data)
 
-    }
+    // }
     const removeFromFollowers = (id: number) => {
         setFollowers(prev => prev.filter(follower => follower.id !== id))
     }
@@ -77,8 +77,6 @@ export function FollowProvider({ children }: { children: React.ReactNode }) {
             value={{
                 followers,
                 following,
-                count,
-                fetchCount,
                 fetchFollowers,
                 fetchFollowing,
                 loadMoreFollowers,
