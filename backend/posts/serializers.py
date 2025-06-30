@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post,SavedPost
+from .models import Post,SavedPost,Media
 from likes.models import Like
 from comments.models import Comment
 from django.contrib.auth import get_user_model
@@ -29,6 +29,11 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'content','user', 'created_at']
+class MediaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Media
+        fields=["id","media_type",'url']
+
 class SavedPostSerializer(serializers.ModelSerializer):
     user = MiniUserSerializer(read_only=True)
     class Meta:
@@ -42,6 +47,7 @@ class FullPostSerializer(TaggitSerializer,serializers.ModelSerializer):
     saved_by = SavedPostSerializer(many=True, read_only=True)
     tags = TagListSerializerField(read_only=True)
     location = serializers.CharField(read_only=True)
+    media = MediaSerializer(many=True,read_only=True)
     class Meta:
         model = Post
         fields = [
@@ -53,6 +59,7 @@ class FullPostSerializer(TaggitSerializer,serializers.ModelSerializer):
             'tags',
             'created_at',
             'updated_at',
+            'media',
             'likes',
             'comments',
             'saved_by',
@@ -72,13 +79,13 @@ class PostCreateSerializer(TaggitSerializer,serializers.ModelSerializer):
             raise serializers.ValidationError("Title cannot be empty or just spaces.")
         return value
 
-    def create(self, validated_data):
-        request = self.context.get('request')
-        user = request.user if request else None
-        tags = validated_data.pop('tags', [])
-        post = Post.objects.create(user=user, **validated_data)
-        post.tags.set(tags) 
-        return post
+    # def create(self, validated_data):
+    #     request = self.context.get('request')
+    #     user = request.user if request else None
+    #     tags = validated_data.pop('tags', [])
+    #     post = Post.objects.create(user=user, **validated_data)
+    #     post.tags.set(tags) 
+    #     return post
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:

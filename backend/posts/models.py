@@ -7,7 +7,7 @@ from taggit.managers import TaggableManager
 class Post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,related_name='posts',on_delete=models.CASCADE)
     title =models.TextField(max_length=500)
-    imageUrl = models.URLField()
+    # imageUrl = models.URLField()
     
     location = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -21,7 +21,18 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+class Media(models.Model):
+    IMAGE='image'
+    VIDEO='video'
 
+    MEDIA_TYPES=[
+        (IMAGE,'Image'),
+        (VIDEO,'Video'),
+    ]
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name='media')
+    media_type=models.CharField(max_length=10,choices=MEDIA_TYPES)
+    url =models.URLField()
+    
 class SavedPost(models.Model):
     user =models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
     post = models.ForeignKey(Post,related_name='saved_by',on_delete=models.CASCADE)
