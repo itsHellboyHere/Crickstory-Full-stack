@@ -4,7 +4,12 @@ from .views import (
     FollowUserAPIView, UnFollowUserAPIView,
     FollowersListAPIView, FollowingListAPIView,
     FollowedYouHistoryAPIView,FollowStatusAPIView,FollowCountsAPIView,
-    RemoveFollowerAPIView
+    RemoveFollowerAPIView,
+    AcceptFollowRequestAPIView,
+    RejectFollowRequestAPIView,
+    FollowRequestsListAPIView,
+    SentFollowRequestsAPIView,
+    CancelFollowRequestAPIView
 )
 
 urlpatterns = [
@@ -16,4 +21,9 @@ urlpatterns = [
     path('remove-follower/<str:username>/',RemoveFollowerAPIView.as_view(),name="remove-follower"),
     path('<str:username>/is-following/', FollowStatusAPIView.as_view(), name='is-following'),
     path('<str:username>/follow-counts/', FollowCountsAPIView.as_view(), name='follow-counts'),
+    path('follow-requests/', FollowRequestsListAPIView.as_view(), name='follow-requests'),
+    path('follow-request/sent/', SentFollowRequestsAPIView.as_view(), name='sent-follow-request'),
+    path('follow-request/<str:username>/accept/', AcceptFollowRequestAPIView.as_view(), name='accept-follow-request'),
+    path('follow-request/<str:username>/reject/', RejectFollowRequestAPIView.as_view(), name='reject-follow-request'),
+    path('follow-request/<str:username>/cancel/', CancelFollowRequestAPIView.as_view(), name='cancel-follow-request'),
 ]

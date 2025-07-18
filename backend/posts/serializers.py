@@ -36,15 +36,17 @@ class MediaSerializer(serializers.ModelSerializer):
 
 class SavedPostSerializer(serializers.ModelSerializer):
     user = MiniUserSerializer(read_only=True)
+    # media = MediaSerializer(many=True, read_only=True)
     class Meta:
         model = SavedPost
         fields = ['id', 'user', 'created_at']
 
 class FullPostSerializer(TaggitSerializer,serializers.ModelSerializer):
     user = MiniUserSerializer(read_only=True)
-    likes = LikeSerializer(many=True, read_only=True)
-    comments = CommentSerializer(many=True, read_only=True)
-    saved_by = SavedPostSerializer(many=True, read_only=True)
+    is_saved=serializers.SerializerMethodField()
+    is_liked = serializers.SerializerMethodField()
+    likes_count = serializers.IntegerField(read_only=True)  
+    comments_count = serializers.IntegerField(read_only=True)
     tags = TagListSerializerField(read_only=True)
     location = serializers.CharField(read_only=True)
     media = MediaSerializer(many=True,read_only=True)
@@ -54,17 +56,28 @@ class FullPostSerializer(TaggitSerializer,serializers.ModelSerializer):
             'id',
             'user',
             'title',
-            'imageUrl',
             'location',
             'tags',
+            'media',
+            'is_saved',
+            'is_liked',
+            'likes_count',
+            'comments_count',
             'created_at',
             'updated_at',
-            'media',
-            'likes',
-            'comments',
-            'saved_by',
         ]
+        
         read_only_fields = ['id', 'created_at', 'updated_at']
+    def get_is_saved(self,obj):
+        request = self.context.get("request")
+        user = request.user if request else None
+        if not user or user.is_anonymous:
+            return False
+        return obj.saved_by.filter(user=user).exists()
+    def get_is_liked(self,obj):
+        request = self.context.get("request")
+        user = request.user if request and request.user.is_authenticated else None
+        return obj.likes.filter(user=user).exists() if user else False
 
 class PostCreateSerializer(TaggitSerializer,serializers.ModelSerializer):
     tags = TagListSerializerField(required=False)
@@ -88,12 +101,13 @@ class PostCreateSerializer(TaggitSerializer,serializers.ModelSerializer):
     #     return post
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    media = MediaSerializer(many=True, read_only=True)
     class Meta:
         model=Post
         fields = [
             'id',
             'title',
-            'imageUrl',
+            'media',
             'created_at',
             'updated_at',
         ]
@@ -101,6 +115,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class SavedPostListSerializer(serializers.ModelSerializer):
+    media = MediaSerializer(many=True, read_only=True)
     class Meta:
         model = Post
-        fields = ['id', 'title', 'imageUrl', 'created_at']
+        fields = ['id', 'title', 'media', 'created_at']

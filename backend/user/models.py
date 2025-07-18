@@ -12,13 +12,6 @@ phone_regex = RegexValidator(
 
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(
-        max_length=15,
-        # unique=True,
-        validators=[phone_regex],
-        null=True,
-        blank=True
-    )
 
 class Profile(models.Model):
     user = models.OneToOneField('user.CustomUser', on_delete=models.CASCADE)
@@ -27,6 +20,14 @@ class Profile(models.Model):
     location = models.CharField(max_length=30, blank=True)
     birth_date = models.DateField(null=True, blank=True)
     image = models.URLField(blank=True, null=True)
+    is_private = models.BooleanField(default=False)
+    phone_number = models.CharField(
+        max_length=15,
+        # unique=True,
+        validators=[phone_regex],
+        null=True,
+        blank=True
+    )
 
     def __str__(self):
         return f"{self.user} profile"

@@ -11,7 +11,10 @@ import { FollowToggleButton } from './FollowToggleButton'
 import type { FollowerItem, FollowingItem } from '@/types/next-auth'
 import { useAuth } from '../context/AuthContext'
 
-type FollowModalProps = {
+import { Loader2 } from 'lucide-react'
+
+
+interface FollowModalProps {
     username: string
     type: 'followers' | 'following'
     open: boolean
@@ -43,7 +46,9 @@ export function FollowModal({
         loadMoreFollowing,
         nextFollowersPage,
         nextFollowingPage,
-
+        sentRequests,
+        fetchSentRequests,
+        cancelFollowRequest
     } = useFollow()
 
     const [loading, setLoading] = useState(true)
@@ -54,6 +59,7 @@ export function FollowModal({
             setLoading(true)
             if (type === 'followers') await fetchFollowers(username)
             else await fetchFollowing(username)
+            await fetchSentRequests()
             setLoading(false)
         }
         if (open) fetchList()
@@ -64,14 +70,13 @@ export function FollowModal({
     const handleRemove = async (id: number, userUsername: string) => {
         try {
             if (type === 'followers') {
-
-                await axios.post(`/api/user/remove-follower/${userUsername}/`);
+                await axios.post(`/api/user/remove-follower/${userUsername}/`)
                 removeFromFollowers(id)
                 if (isCurrentUser && setCounts) {
                     setCounts(prev => ({ ...prev, followers: prev.followers - 1 }))
                 }
             } else {
-                await axios.post(`/api/user/unfollow/${userUsername}/`);
+                await axios.post(`/api/user/unfollow/${userUsername}/`)
                 removeFromFollowing(id)
                 if (isCurrentUser && setCounts) {
                     setCounts(prev => ({ ...prev, following: prev.following - 1 }))
@@ -91,16 +96,20 @@ export function FollowModal({
             <div className="fixed inset-0 flex items-center justify-center p-4">
                 <DialogPanel className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
                     <DialogTitle className="text-lg font-semibold mb-4 capitalize">{type}</DialogTitle>
+
                     {loading ? (
-                        <p>Loading...</p>
+                        <div className="flex items-center justify-center py-10">
+                            <Loader2 className="animate-spin w-6 h-6 text-gray-600" />
+                        </div>
                     ) : list.length === 0 ? (
                         <p className="text-gray-500">No {type} yet.</p>
                     ) : (
-                        <ul className="space-y-4 max-h-80 overflow-y-auto">
+                        <ul className="space-y-4">
                             {list.map((item: FollowerItem | FollowingItem) => {
                                 const user = type === 'followers' ? (item as FollowerItem).follower : (item as FollowingItem).following
                                 const isFollowing = item.is_following
                                 const itemId = item.id
+                                const hasRequested = sentRequests.some(req => req.username === user.username)
 
                                 return (
                                     <li key={itemId} className="flex items-center justify-between">
@@ -118,14 +127,13 @@ export function FollowModal({
                                         </div>
 
                                         {user.username === loggedInUser?.username ? null : isCurrentUser ? (
-                                            <Button onClick={() => handleRemove(itemId, user.username)}>
-                                                Remove
-                                            </Button>
+                                            <Button onClick={() => handleRemove(itemId, user.username)}>Remove</Button>
                                         ) : (
                                             <FollowToggleButton
                                                 userId={user.id}
                                                 username={user.username}
                                                 initialIsFollowing={isFollowing}
+                                                initialHasRequested={hasRequested}
                                                 setCounts={user.username === loggedInUser?.username ? setCounts : undefined}
                                                 onFollowChange={(id, newIsFollowing) => {
                                                     if (type === 'followers') {
@@ -144,7 +152,7 @@ export function FollowModal({
                                                     if (setCounts && user.username === username) {
                                                         setCounts(prev => ({
                                                             ...prev,
-                                                            followers: prev.followers + (newIsFollowing ? 1 : -1),
+                                                            followers: prev.followers + (newIsFollowing ? 1 : -1)
                                                         }))
                                                         setIsFollowing(newIsFollowing)
                                                     }
@@ -154,7 +162,6 @@ export function FollowModal({
                                     </li>
                                 )
                             })}
-
                             {(type === 'followers' && nextFollowersPage) || (type === 'following' && nextFollowingPage) ? (
                                 <li className="text-center">
                                     <Button
@@ -163,9 +170,7 @@ export function FollowModal({
                                         Load More
                                     </Button>
                                 </li>
-                            ) : (
-                                <li className="text-center text-sm text-gray-400">No more {type}</li>
-                            )}
+                            ) : null}
                         </ul>
                     )}
                 </DialogPanel>

@@ -22,15 +22,17 @@ export default function LikeButton({
         setIsLoading(true);
         try {
             const res = await axios.post(`/api/posts/${postId}/like/`);
-            const { liked, total_likes } = res.data;
+            const { liked, total_likes = 0 } = res.data;
+            console.log(res.data)
             setIsLiked(liked);
             setLikes(total_likes);
-            router.refresh(); // this ensures other parts of the page update, like feed/cards etc
+
+            router.refresh();
         } finally {
             setIsLoading(false);
         }
     };
-
+    console.log("likes ", likes)
     const renderLikeText = () => {
         if (likes === 0) return "Be the first to like this";
         if (isLiked && likes === 1) return "Liked by you";

@@ -17,8 +17,8 @@ export default function InteractivePostActions({
 
 
     return (
-        <div className="p-2">
-            <div className="flex gap-3 mb-2">
+        <div className="">
+            <div className="flex gap-2">
                 <LikeButton
                     postId={postId}
                     initialLikes={initialLikes}

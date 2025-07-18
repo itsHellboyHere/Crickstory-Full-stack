@@ -6,6 +6,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { AuthProvider } from "./context/AuthContext";
 import { FollowProvider } from "./context/FollowContext";
 import { NotificationProvider } from "./context/NotificationContext";
+import StoreProvider from "./StoreProvider";
 
 
 const geistSans = Geist({
@@ -26,24 +27,25 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-          <AuthProvider>
-
-            <NotificationProvider>
-              <FollowProvider>
-
-                {children}
-
-              </FollowProvider>
-            </NotificationProvider>
-            <Toaster position="top-center" />
-
-          </AuthProvider>
-        </GoogleOAuthProvider>
+    <html
+      lang="en"
+      // suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable}`}
+    >
+      <body>
+        <StoreProvider>
+          <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+            <AuthProvider>
+              <NotificationProvider>
+                <FollowProvider>{children}</FollowProvider>
+              </NotificationProvider>
+              <Toaster position="top-center" />
+            </AuthProvider>
+          </GoogleOAuthProvider>
+        </StoreProvider>
       </body>
     </html>
   );
 }
+
 

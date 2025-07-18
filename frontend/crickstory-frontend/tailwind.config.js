@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+const { heroui } = require("@heroui/react");
 module.exports = {
     darkMode: 'media', // required for manual theme switching
     content: [
@@ -12,5 +13,5 @@ module.exports = {
             // you can customize colors here later
         },
     },
-    plugins: [],
+    plugins: [heroui()],
 }

@@ -13,4 +13,4 @@ COPY backend/ .
 
 ENV PYTHONPATH=/app
 
-CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "crickstory.asgi:application"]
+CMD ["bash", "-c", "python manage.py migrate && daphne --verbosity 2 --access-log - --proxy-headers -b 0.0.0.0 -p 8000 crickstory.asgi:application"]

@@ -94,6 +94,9 @@ class PublicProfileView(RetrieveAPIView):
     def get_queryset(self):
         return Profile.objects.select_related('user')
     
+    def get_serializer_context(self):
+        return {"request": self.request}
+    
 
 class CustomConfirmEmailView(APIView):
     def get(self, request, key):
@@ -105,3 +108,12 @@ class CustomConfirmEmailView(APIView):
             raise Http404()
         except Exception:
             raise Http404()
+
+class TogglePrivacyAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        profile = request.user.profile
+        profile.is_private = not profile.is_private
+        profile.save()
+        return Response({"is_private": profile.is_private})

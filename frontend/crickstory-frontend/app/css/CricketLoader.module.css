@@ -79,10 +79,10 @@
 
   .scoreboard {
     display: flex;
-    gap: 6px;
+    gap: 4px;
     justify-content: center;
     align-items: center;
-    padding: 16px;
+    padding: 10px;
   }
   
   .charBlock {
@@ -106,6 +106,21 @@
     animation: flicker 1.5s infinite ease-in-out;
   }
   
+   @media (max-width: 760px) {
+    .loaderContainer {
+      width: 60px;
+      height: 60px;
+    }
+    .charBlock {
+      height: 40px;
+      width: 30px;
+      font-size: 1.3rem;
+    }
+    .scoreboard {
+      padding: 5px;
+      gap: 4px;
+    }
+  }
   @keyframes flip {
     0% {
       transform: rotateX(0deg);

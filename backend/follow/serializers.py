@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Follow
+from .models import Follow,FollowRequest
 
 User=get_user_model()
 
@@ -28,10 +28,10 @@ class FollowSerializer(serializers.ModelSerializer):
 class FollowerDetailSerializer(serializers.ModelSerializer):
     follower = UserBasicSerializer(read_only=True)
     is_following = serializers.SerializerMethodField()
-
+    has_requested = serializers.SerializerMethodField()
     class Meta:
         model = Follow
-        fields = ['id', 'follower', 'created_at', 'is_following']
+        fields = ['id', 'follower', 'created_at', 'is_following','has_requested']
 
     def get_is_following(self, obj):
         request = self.context.get('request')
@@ -42,15 +42,22 @@ class FollowerDetailSerializer(serializers.ModelSerializer):
                 is_active=True
             ).exists()
         return False
-
+    def get_has_requested(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return FollowRequest.objects.filter(
+                from_user=request.user,
+                to_user=obj.follower
+            ).exists()
+        return False
 
 class FollowingDetailSerializer(serializers.ModelSerializer):
     following = UserBasicSerializer(read_only=True)
     is_following = serializers.SerializerMethodField()
-
+    has_requested = serializers.SerializerMethodField()
     class Meta:
         model = Follow
-        fields = ['id', 'following', 'created_at', 'is_following']
+        fields = ['id', 'following', 'created_at', 'is_following','has_requested']
 
     def get_is_following(self, obj):
         request = self.context.get('request')
@@ -59,5 +66,13 @@ class FollowingDetailSerializer(serializers.ModelSerializer):
                 follower=request.user,
                 following=obj.following,
                 is_active=True
+            ).exists()
+        return False
+    def get_has_requested(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return FollowRequest.objects.filter(
+                from_user=request.user,
+                to_user=obj.following
             ).exists()
         return False

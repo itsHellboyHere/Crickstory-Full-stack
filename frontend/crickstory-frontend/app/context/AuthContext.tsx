@@ -18,6 +18,7 @@ type Profile = {
   bio?: string;
   location?: string;
   birth_date?: string;
+  phone_number?: number;
 };
 
 type AuthContextType = {

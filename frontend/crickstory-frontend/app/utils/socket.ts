@@ -1,5 +1,5 @@
 export function connectSocket(): WebSocket {
-  const socket = new WebSocket("ws://localhost:8000/ws/notifications/");
+  const socket = new WebSocket("ws://localhost/ws/notifications/");
 
   socket.onopen = () => {
     console.log("✅ WebSocket connection established");

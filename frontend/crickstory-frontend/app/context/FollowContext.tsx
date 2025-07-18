@@ -1,6 +1,6 @@
 'use client'
 import axios from "@/app/utils/axios"
-import { FollowerItem, FollowingItem } from "@/types/next-auth"
+import { FollowerItem, FollowingItem, User } from "@/types/next-auth"
 import React, { createContext, useContext, useState } from "react"
 
 
@@ -8,16 +8,19 @@ import React, { createContext, useContext, useState } from "react"
 export interface FollowContextType {
     followers: FollowerItem[]
     following: FollowingItem[]
+    sentRequests: User[]
     // count: number
     // fetchCount: (username: string) => Promise<void>
     fetchFollowers: (username: string) => Promise<void>
     fetchFollowing: (username: string) => Promise<void>
+    fetchSentRequests: () => Promise<void>
     loadMoreFollowers: () => Promise<void>
     loadMoreFollowing: () => Promise<void>
     removeFromFollowers: (id: number) => void
     removeFromFollowing: (id: number) => void
     updateFollowers: (newFollowers: FollowerItem[]) => void
     updateFollowing: (newFollowing: FollowingItem[]) => void
+    cancelFollowRequest: (username: string) => Promise<void>
     nextFollowersPage: string | null
     nextFollowingPage: string | null
 }
@@ -30,6 +33,8 @@ export function FollowProvider({ children }: { children: React.ReactNode }) {
     // const [count, setCount] = useState(0)
     const [nextFollowersPage, setNextFollowersPage] = useState<string | null>(null)
     const [nextFollowingPage, setNextFollowingPage] = useState<string | null>(null)
+    const [sentRequests, setSentRequests] = useState<User[]>([])
+
     const fetchFollowers = async (username: string) => {
         const res = await axios.get(`/api/user/followers/${username}/`)
         setFollowers(res.data.results || [])
@@ -52,6 +57,16 @@ export function FollowProvider({ children }: { children: React.ReactNode }) {
         setFollowing(prev => [...prev, ...res.data.results])
         setNextFollowingPage(res.data.next)
     }
+    const fetchSentRequests = async () => {
+        const res = await axios.get('/api/user/follow-request/sent/')
+        setSentRequests(res.data.results || [])
+    }
+
+    const cancelFollowRequest = async (username: string) => {
+        await axios.post(`/api/user/follow-request/${username}/cancel/`)
+        setSentRequests(prev => prev.filter(req => req.username !== username))
+    }
+
     // const fetchCount = async (username: string) => {
     //     const res = await axios.get(`/api/user/${username}/follow-counts/`)
     //     setCount(res.data)
@@ -87,6 +102,9 @@ export function FollowProvider({ children }: { children: React.ReactNode }) {
                 updateFollowing,
                 nextFollowersPage,
                 nextFollowingPage,
+                sentRequests,
+                fetchSentRequests,
+                cancelFollowRequest,
             }}
         >
             {children}

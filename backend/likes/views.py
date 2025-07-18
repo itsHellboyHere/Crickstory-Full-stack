@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from posts.models import Post
+
 from notifications.utils import like_notification
 class ToggleLikeView(APIView):
     permission_classes=[IsAuthenticated]

@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 import cloudinary.uploader
 from django.db.models import Count
-from .models import Post,SavedPost
+from .models import Post,SavedPost,Media
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from follow.models import Follow
@@ -22,48 +22,43 @@ class CreatePostView(APIView):
         title = request.data.get('title')
         tags = request.data.getlist('tags')  
         location = request.data.get('location')
-        image_file = request.FILES.get("file")
+        files = request.FILES.getlist("files")
 
         if not title:
             return Response({"error": "Title is required."}, status=400)
-        if not image_file:
-            return Response({"error": "Image file is required."}, status=400)
+        if not files:
+            return Response({"error": "At least one media file is required."}, status=400)
         
                 # Validate file size
-        if image_file.size > 8 * 1024 * 1024:
-            return Response({"error": "Image size should be less than 8MB."}, status=400)
-        
-        try :
-            # Uplaod to cloudinary
-            result = cloudinary.uploader.upload(
-                image_file,
-                folder="post_images",
-                transformation=[
-                    {"quality": "auto:eco"},
-              
-                    # {"width": 1080, "crop": "limit"},
-                ]
-            )
-            image_url = result["secure_url"]
-        except Exception as e:
-            return Response({"error": f"Cloudinary error: {str(e)}"}, status=500)
-        
-        data={
-            "title":title,
-            "imageUrl":image_url,
-            "tags": tags,              
-            "location": location 
-        }
-        serializer= PostCreateSerializer(data=data,context={"request":request})
-        if serializer.is_valid():
-            post = serializer.save()
-            return Response({
-                "message": "Post created successfully.",
-                "post_id": post.id,
-                "imageUrl": post.imageUrl
-            }, status=201)
-        return Response(serializer.errors, status=400)
+        for file in files:
+            if file.size > 50 *1024 *1024:
+                return Response({"error": "Each file must be under 50MB."}, status=400)
+        post = Post.objects.create(user=request.user,title=title,location=location)
+        post.tags.set(tags)
 
+        for file in files:
+            resource_type = "video" if "video" in file.content_type else "image"
+            try:
+                result = cloudinary.uploader.upload(
+                    file,
+                    resource_type=resource_type,
+                    folder="post_media",
+                    transformation=[
+                        {"quality": "auto"},
+                        {"fetch_format": "auto"},
+                    ]
+                )
+                Media.objects.create(
+                    post=post,
+                    media_type=resource_type,
+                    url=result["secure_url"]
+                )
+            except Exception as e:
+                post.delete()  # Clean up partial post
+                return Response({"error": f"Cloudinary error: {str(e)}"}, status=500)
+
+        serialized_post = FullPostSerializer(post, context={'request': request})
+        return Response(serialized_post.data, status=201)
 
 
 from rest_framework.pagination import CursorPagination
@@ -98,15 +93,19 @@ class FeedPostsView(generics.ListAPIView):
             return Post.objects.all().select_related('user').prefetch_related(
                 'likes__user',
                 'saved_by__user',
-                'comments__user'
-            ).order_by('-created_at')
+            ).annotate(
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comments', distinct=True)
+        ).order_by('-created_at')
         
         following_ids.append(user.id)
         # Show only posts from followed users
         return Post.objects.filter(user__id__in=following_ids).select_related('user').prefetch_related(
             'likes__user',
             'saved_by__user',
-            'comments__user'
+        ).annotate(
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comments', distinct=True)
         ).order_by('-created_at').distinct()
     
 class PostDetailView(generics.RetrieveAPIView):
@@ -115,6 +114,14 @@ class PostDetailView(generics.RetrieveAPIView):
     queryset = Post.objects.all()
     lookup_field = 'id'
 
+    def get_queryset(self):
+        return Post.objects.annotate(
+            likes_count = Count('likes',distinct=True),
+            comments_count=Count('comments',distinct=True)
+        ).select_related('user').prefetch_related(
+              'likes__user',
+            'saved_by__user',
+        )
 
 
 

@@ -136,7 +136,20 @@ export default function ProfileInfoForm() {
                         className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 "
                     />
                 </div>
-
+                {/* phone number */}
+                <div>
+                    <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700  mb-1">
+                        Phone
+                    </label>
+                    <input
+                        id="phone_number"
+                        name="phone_number"
+                        type="number"
+                        defaultValue={profile?.phone_number ?? ''}
+                        className="w-full px-4 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 "
+                        placeholder="Your location"
+                    />
+                </div>
                 <div className="flex justify-end">
                     <button
                         type="submit"

@@ -1,94 +1,65 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
-import { fetchPosts } from '@/app/lib/fetchPosts';
+import { useEffect, useState, useRef, useCallback } from 'react';
+
 import PostCard from '@/app/components/PostCard';
 import PostSkeleton from '@/app/components/PostSkeleton';
 import { useAuth } from '@/app/context/AuthContext';
-import { Post } from '@/types/next-auth';
 import Image from 'next/image';
-import styles from "@/app/css/Post.module.css"
+import { RootState, AppDispatch } from '@/app/store/store';
+import { fetchPostsThunk, resetPosts } from '@/app/features/postsSlice';
+import { useAppDispatch, useAppSelector } from '@/app/store/hook';
 export default function PostsPage() {
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [cursor, setCursor] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
+    const dispatch = useAppDispatch();
+    const { posts, status, nextCursor, hasMore } = useAppSelector((state: RootState) => state.posts)
     const { user } = useAuth();
+    const loadMoreRef = useRef<HTMLDivElement>(null); // Ref for IntersectionObserver
 
-    const loadPosts = useCallback(async () => {
-        if (!hasMore || loading) return;
+    const loadPosts = useCallback(() => {
+        if (status === 'loading' || !hasMore) return;
+        dispatch(fetchPostsThunk(nextCursor || undefined));
 
-        setLoading(true);
-        try {
-            const data = await fetchPosts(cursor || undefined);
+    }, [dispatch, status, hasMore, nextCursor]);
 
-            setPosts(prev => {
-                const newPosts = data.results.filter(
-                    newPost => !prev.some(post => post.id === newPost.id)
-                );
-                return [...prev, ...newPosts];
-            });
-
-            const nextCursor = data.next ? new URL(data.next).searchParams.get('cursor') : null;
-            console.log(nextCursor)
-            setCursor(nextCursor);
-            setHasMore(!!nextCursor);
-        } catch (error) {
-            console.error('Error loading posts:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [cursor, hasMore, loading]);
-
-    const handleScroll = useCallback(() => {
-        if (
-            window.innerHeight + document.documentElement.scrollTop >=
-            document.documentElement.scrollHeight - 100 &&
-            hasMore &&
-            !loading
-        ) {
-            loadPosts();
-        }
-    }, [hasMore, loading, loadPosts]);
 
     useEffect(() => {
         if (posts.length === 0) {
             loadPosts();
         }
+    }, [loadPosts, posts.length]);
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [handleScroll, loadPosts, posts.length]);
 
-    // ✅ Auto - load if screen is not filled
     useEffect(() => {
-        const checkIfFillNeeded = () => {
-            if (
-                document.documentElement.scrollHeight <= window.innerHeight &&
-                hasMore &&
-                !loading
-            ) {
-                loadPosts();
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting && hasMore && status !== 'loading') {
+                    loadPosts();
+                }
+            },
+            {
+                root: null,
+                threshold: 1.0,
             }
+        );
+
+        const el = loadMoreRef.current;
+        if (el) observer.observe(el);
+        return () => {
+            if (el) observer.unobserve(el);
         };
+    }, [loadPosts, hasMore, status]);
 
-        checkIfFillNeeded();
-
-        const interval = setInterval(checkIfFillNeeded, 500);
-        return () => clearInterval(interval);
-    }, [posts, hasMore, loading, loadPosts]);
     // ✅ Pull-to-refresh
     const handleRefresh = async () => {
-        setPosts([]);
-        setCursor(null);
-        setHasMore(true);
-        await loadPosts();
+        dispatch(resetPosts());
+        dispatch(fetchPostsThunk(undefined))
     };
+
+
     const [showTopBtn, setShowTopBtn] = useState(false);
-    console.log("scroll-y ", window.scrollY)
+
     useEffect(() => {
         const handleShowBtn = () => {
-
             if (window.scrollY > window.innerHeight * 0.2) {
                 setShowTopBtn(true);
             } else {
@@ -103,20 +74,23 @@ export default function PostsPage() {
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
+
     return (
         <>
-            <div className={`max-w-2xl mx-auto pb-20 mt-4  min-h-screen `}>
+            <div className="max-w-2xl mx-auto pb-20 mt-4 min-h-screen">
+                {/* Refresh Button */}
                 <div className="flex justify-center my-4">
                     <button
                         onClick={handleRefresh}
-                        className="flex items-center gap-2 px-4 py-2  text-gray-600 rounded hover:bg-sky-200 transition"
+                        className="flex items-center gap-2 px-4 py-2 text-gray-600 rounded hover:bg-sky-200 transition"
                     >
                         <Image src="/cricket-bat.svg" alt="Refresh" width={24} height={24} />
                         Refresh Feed
                     </button>
                 </div>
 
-                <div className={`space-y-6`}>
+                {/* Post List */}
+                <div className="space-y-6">
                     {posts.map(post => (
                         <PostCard
                             key={`post-${post.id}-${post.created_at}`}
@@ -126,16 +100,21 @@ export default function PostsPage() {
                     ))}
                 </div>
 
-                {loading && <PostSkeleton count={3} />}
+                {/* Skeleton Loader */}
+                {status === 'loading' && <PostSkeleton count={3} />}
 
+                {/* End Message */}
                 {!hasMore && posts.length > 0 && (
                     <div className="text-center py-6 text-gray-500">
                         You've reached the end of the feed
                     </div>
                 )}
+
+                {/* Sentinel for IntersectionObserver */}
+                <div ref={loadMoreRef} className="h-10" />
             </div>
 
-
+            {/* Scroll to top */}
             {showTopBtn && (
                 <button
                     onClick={scrollToTop}
@@ -147,7 +126,4 @@ export default function PostsPage() {
             )}
         </>
     );
-
 }
-
-

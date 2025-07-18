@@ -7,7 +7,7 @@ export default function NotificationList() {
     const { notifications, markAsSeen } = useNotification();
     // console.log(notifications)
     return (
-        <div className="max-w-md mx-auto mt-6 px-4">
+        <div className="max-w-md mx-auto mt-4 px-4 md:mt-10">
             <h2 className="text-xl font-bold mb-4 text-center">Notifications</h2>
             {notifications.length === 0 ? (
                 <p className="text-gray-500 text-center">No notifications yet.</p>
@@ -41,10 +41,12 @@ export default function NotificationList() {
 
                                 {/* Notification Text */}
                                 <div className="flex-1">
-                                    <p className="text-sm text-gray-800">{notif.message}</p>
-                                    {username && (
-                                        <p className="text-sm text-gray-600">@{username}</p>
-                                    )}
+                                    <Link href={`/profile/${username}`}>
+                                        <p className="text-sm text-gray-800">{notif.message}</p>
+                                        {username && (
+                                            <p className="text-sm text-gray-600">@{username}</p>
+                                        )}
+                                    </Link>
                                     <p className="text-xs text-gray-400">
                                         {notif.created_at
                                             ? new Date(notif.created_at).toLocaleString()

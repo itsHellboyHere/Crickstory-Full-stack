@@ -236,6 +236,8 @@ REST_AUTH = {
 # settings.py
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    # 'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
+    # 'USE_X_FORWARDED_HOST': True,
     'PAGE_SIZE': 10,  
 }
 CSRF_COOKIE_SECURE = False
@@ -291,7 +293,12 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],   
+            "hosts": [("redis", 6379)],   
         },
     },
 }
+
+# settings.py
+USE_X_FORWARDED_HOST = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')  
+FORCE_SCRIPT_NAME = ''  

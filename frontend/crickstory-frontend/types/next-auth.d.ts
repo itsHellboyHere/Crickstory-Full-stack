@@ -28,15 +28,20 @@ export interface User {
   export interface Post {
     id: number;
     title: string;
-    imageUrl: string;
+    media: {
+      id: number;
+      media_type: 'image' | 'video';
+      url: string;
+    }[];
     user: User;
-    likes: Like[];
-    comments: Comment[];
-    saved_by: SavedPost[];
+    likes_count: number;
+    comments_count: number;
+    is_liked: boolean;
+    is_saved: boolean;
     created_at: string;
     updated_at: string;
-    tags: string[];         
-    location: string | null; 
+    tags: string[];
+    location: string | null;
   }
   
   export interface PostsResponse {
