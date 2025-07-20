@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     # "your-domain.com",
-    "http://ec2-13-51-166-181.eu-north-1.compute.amazonaws.com", 
+    "ec2-13-51-166-181.eu-north-1.compute.amazonaws.com", 
 ]
 
 
