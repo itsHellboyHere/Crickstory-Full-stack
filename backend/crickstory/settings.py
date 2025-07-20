@@ -189,10 +189,12 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://51.21.190.215", 
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
+    "http://51.21.190.215", 
 ]
 AUTHENTICATION_BACKENDS = [
     # allauth specific authentication methods, such as login by e-mail

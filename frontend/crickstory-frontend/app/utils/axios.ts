@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 
 
 const instance = axios.create({
-  baseURL: 'http://localhost',
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
   withCredentials: true,
   
 });
