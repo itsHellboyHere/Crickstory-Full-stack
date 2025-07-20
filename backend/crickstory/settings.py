@@ -190,13 +190,13 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://51.21.190.215", 
-    'ec2-16-171-208-20.eu-north-1.compute.amazonaws.com',  
+    "https://ec2-16-171-208-20.eu-north-1.compute.amazonaws.com"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://51.21.190.215", 
-    'ec2-16-171-208-20.eu-north-1.compute.amazonaws.com',  
+    "https://ec2-16-171-208-20.eu-north-1.compute.amazonaws.com"
 ]
 AUTHENTICATION_BACKENDS = [
     # allauth specific authentication methods, such as login by e-mail
