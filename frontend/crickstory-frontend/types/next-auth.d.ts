@@ -64,3 +64,25 @@ export interface User {
     created_at: string
     is_following: boolean
   }
+
+  export interface Message {
+  id: number;
+  room:number;
+  content: string;
+  file_url: string | null;
+  message_type: "text" | "image" | "video" | "file";
+  created_at: string;
+  sender: {
+    id: number;
+    name: string;
+    username: string;
+    image: string;
+  };
+}
+
+export interface PaginatedMessages {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Message[];
+}

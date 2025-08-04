@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     # "your-domain.com",
-    "ec2-13-51-166-181.eu-north-1.compute.amazonaws.com", 
+
 ]
 
 
@@ -71,6 +71,8 @@ INSTALLED_APPS = [
     'comments',
     'follow',
     'notifications',
+    'chat',
+    'search',
     # channels
     'channels',
 
@@ -91,7 +93,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'crickstory.urls'
-print(os.path.join(BASE_DIR/'templates'))
+# print(os.path.join(BASE_DIR/'templates'))
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -303,12 +305,25 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("redis", 6379)],   
+            "hosts": [("localhost", 6379)],   
         },
     },
 }
 
-# settings.py
+
 USE_X_FORWARDED_HOST = True
 # SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'http')  
 FORCE_SCRIPT_NAME = ''  
+
+# typesense config
+TYPESENSE_CONFIG = {
+    "api_key": os.getenv("TYPESENSE_API_KEY"),
+    "nodes": [
+        {
+            "host": os.getenv("TYPESENSE_HOST", "localhost"),
+            "port": os.getenv("TYPESENSE_PORT", "8108"),
+            "protocol": os.getenv("TYPESENSE_PROTOCOL", "http")
+        }
+    ],
+    "connection_timeout_seconds": 2
+}

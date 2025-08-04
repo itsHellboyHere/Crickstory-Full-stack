@@ -117,3 +117,20 @@ class TogglePrivacyAPIView(APIView):
         profile.is_private = not profile.is_private
         profile.save()
         return Response({"is_private": profile.is_private})
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from .authentication import JWTAuthFromCookie  # Your custom class
+
+class WebSocketTokenView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthFromCookie]  # Override default
+
+    def get(self, request):
+        # Return current access token or generate a short-lived one
+        token = str(request.auth)  # already validated
+        return Response({"ws_token": token})

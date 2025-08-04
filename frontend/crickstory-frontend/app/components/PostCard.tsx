@@ -6,12 +6,11 @@ import { formatDistanceToNow } from 'date-fns';
 import { Post } from '@/types/next-auth';
 import InteractivePostActions from './InteractivePostActions';
 import SavePostButton from './SavedPostButton';
-import { memo } from 'react';
-import styles from "../css/Post.module.css";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
-import { useState } from "react";
-import { useRouter } from 'next/navigation'; // Changed from 'next/router'
+import { memo, useState } from 'react';
+import styles from '../css/Post.module.css';
+import { useKeenSlider } from 'keen-slider/react';
+import 'keen-slider/keen-slider.min.css';
+import { useRouter } from 'next/navigation';
 
 interface PostCardProps {
     post: Post;
@@ -19,9 +18,13 @@ interface PostCardProps {
 }
 
 function PostCard({ post, currentUserId }: PostCardProps) {
-    const router = useRouter(); // Now using the correct router
-    const isSaved = post.is_saved
-    const isLiked = post.is_liked
+    const router = useRouter();
+    const isSaved = post.is_saved;
+    const isLiked = post.is_liked;
+
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [loaded, setLoaded] = useState(false);
+
     const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
         loop: false,
         slides: {
@@ -29,20 +32,20 @@ function PostCard({ post, currentUserId }: PostCardProps) {
             spacing: 0,
         },
         dragSpeed: 0.5,
+        slideChanged(slider) {
+            setCurrentSlide(slider.track.details.rel);
+        },
         created() {
             setLoaded(true);
         },
     });
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [loaded, setLoaded] = useState(false);
 
     const handlePostClick = () => {
         router.push(`/posts/${post.id}`);
     };
 
-    // Rest of your component remains the same...
     return (
-        <article className={`bg-white  border border-gray-200 rounded-lg mb-6 ${styles.postCardContainer}`}>
+        <article className={`bg-white border border-gray-200 rounded-lg mb-6 ${styles.postCardContainer}`}>
             {/* Header */}
             <header className="flex items-center p-4">
                 <div className="w-10 h-10 rounded-full overflow-hidden mr-3">
@@ -57,19 +60,11 @@ function PostCard({ post, currentUserId }: PostCardProps) {
                     </Link>
                 </div>
                 <div className="flex-1">
-                    <Link
-                        href={`/profile/${post.user.username}`}
-                        className="font-semibold hover:underline"
-                    >
+                    <Link href={`/profile/${post.user.username}`} className="font-semibold hover:underline">
                         {post.user.name || post.user.username}
                     </Link>
-                    {/* <p className="text-gray-500 text-xs">
-                        {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
-                    </p> */}
                     {post.location && (
-                        <p className="text-gray-500 text-xs mt-1">
-                            {post.location}
-                        </p>
+                        <p className="text-gray-500 text-xs mt-1">{post.location}</p>
                     )}
                 </div>
                 <button className="text-gray-500 hover:text-gray-700">
@@ -77,44 +72,46 @@ function PostCard({ post, currentUserId }: PostCardProps) {
                 </button>
             </header>
 
-            {/* Image/Video Slider */}
+            {/* Media Slider */}
             {post.media.length > 0 && (
-                <div className="relative aspect-square bg-black  overflow-hidden max-w-full">
+                <div
+                    onClick={handlePostClick}
+                    className="relative aspect-square bg-black overflow-hidden max-w-full cursor-pointer"
+                >
                     <div
                         ref={sliderRef}
                         className="keen-slider h-full w-full overflow-hidden"
-                        onClick={handlePostClick}
                     >
                         {post.media.map((media, index) => (
-                            <div className="keen-slider__slide !w-full !max-w-full relative h-full" key={media.id}>
-                                <div className="absolute inset-0 cursor-pointer w-full h-full">
+                            <div
+                                className="keen-slider__slide !w-full !max-w-full relative h-full"
+                                key={media.id}
+                            >
+                                <div className="absolute inset-0 w-full h-full">
                                     {media.media_type === 'image' ? (
-                                        <div className="absolute inset-0 w-full h-full">
-                                            <Image
-                                                src={media.url}
-                                                fill
-                                                alt={`media-${index}`}
-                                                className="object-cover"
-                                                sizes="100vw"
-                                            />
-                                        </div>
+                                        <Image
+                                            src={media.url}
+                                            fill
+                                            alt={`media-${index}`}
+                                            className="object-cover"
+                                            sizes="100vw"
+                                        />
                                     ) : (
-                                        <div className="absolute inset-0 w-full h-full">
-                                            <video
-                                                src={media.url}
-                                                className="w-full h-full object-cover"
-                                                playsInline
-                                                muted
-                                                loop
-                                            />
-                                        </div>
+                                        <video
+                                            src={media.url}
+                                            className="w-full h-full object-cover"
+                                            muted
+                                            autoPlay
+                                            playsInline
+                                            loop
+                                        />
                                     )}
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    {/* Navigation dots */}
+                    {/* Navigation Dots */}
                     {post.media.length > 1 && loaded && (
                         <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
                             {post.media.map((_, i) => (
@@ -124,16 +121,17 @@ function PostCard({ post, currentUserId }: PostCardProps) {
                                         e.stopPropagation();
                                         instanceRef.current?.moveToIdx(i);
                                     }}
-                                    className={`w-2 h-2 rounded-full transition-all ${i === currentSlide ? 'bg-white w-4' : 'bg-gray-400 bg-opacity-50'} opacity-80`}
+                                    className={`h-3 w-3 md:h-4 md:w-4 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-white scale-125' : 'bg-gray-400 bg-opacity-50'
+                                        }`}
                                     aria-label={`Go to slide ${i + 1}`}
-                                ></button>
+                                />
                             ))}
                         </div>
                     )}
                 </div>
             )}
 
-            {/* Rest of your component... */}
+            {/* Footer */}
             <div className="p-4">
                 <div className="flex justify-between items-center mb-2">
                     <InteractivePostActions
@@ -162,16 +160,14 @@ function PostCard({ post, currentUserId }: PostCardProps) {
                 {post.comments_count === 0 ? (
                     <span className="text-gray-500 text-sm">No comments yet</span>
                 ) : (
-                    (
-                        <div className="mt-1">
-                            <Link
-                                href={`/posts/${post.id}`}
-                                className="text-gray-500 text-sm hover:underline"
-                            >
-                                View all {post.comments_count} comments
-                            </Link>
-                        </div>
-                    )
+                    <div className="mt-1">
+                        <Link
+                            href={`/posts/${post.id}`}
+                            className="text-gray-500 text-sm hover:underline"
+                        >
+                            View all {post.comments_count} comments
+                        </Link>
+                    </div>
                 )}
 
                 <p className="text-gray-400 text-xs mt-2">

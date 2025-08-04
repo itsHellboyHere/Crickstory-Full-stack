@@ -1,6 +1,9 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 class Follow(models.Model):
     follower = models.ForeignKey(
@@ -42,3 +45,11 @@ class FollowRequest(models.Model):
 
     class Meta:
         unique_together = ('from_user', 'to_user')
+
+
+@receiver(post_save, sender=Follow)
+def update_follower_count(sender, instance, **kwargs):
+    # Recalculate the follower count only for the 'following' user
+    from search.indexers import index_user
+    if instance.following:
+        index_user(instance.following)

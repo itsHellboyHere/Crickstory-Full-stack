@@ -1,0 +1,44 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: white;
+  padding: 20px;
+  width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 8px;
+}
+
+.userList {
+  margin-top: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.userItem {
+  padding: 8px;
+  border: 1px solid #ccc;
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}

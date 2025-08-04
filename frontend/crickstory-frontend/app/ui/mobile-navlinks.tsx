@@ -7,6 +7,7 @@ import {
     PlusIcon,
     UserIcon,
     PowerIcon,
+    MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -16,6 +17,8 @@ import NotificationBell from '@/app/components/NotificationBell';
 const links = [
     { name: 'Post', href: '/posts', icon: HomeIcon },
     { name: 'Create', href: '/posts/create', icon: PlusIcon },
+    { name: 'Search', href: '/search', icon: MagnifyingGlassIcon },
+
 ];
 
 export default function MobileNavLinks() {

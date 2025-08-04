@@ -69,8 +69,25 @@ services:
     container_name: redis_crickstory
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
     networks:
       - app_net 
+  typesense:
+    image: typesense/typesense:29.0
+    container_name: typesense_server
+    ports:
+      - "8108:8108"
+    env_file:
+      - .env
+    volumes:
+      - typesense_data:/data
+    
+    command: '--data-dir /data --api-key=${API_KEY_TYPESENSE} --enable-cors'
+    networks:
+      - app_net
+    restart: unless-stopped
+
 
 networks:
   app_net:
@@ -79,3 +96,5 @@ networks:
 volumes:
   postgres_data:
   pgadmin:
+  typesense_data:
+  redis_data:

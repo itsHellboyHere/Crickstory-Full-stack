@@ -18,7 +18,7 @@ export default function MobileSideNav() {
     if (!show) return null;
 
     return (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-white border-b shadow-sm flex items-center justify-around px-2 py-2">
+        <div className="fixed  top-0 left-0 right-0 z-50 bg-white  shadow-md flex items-center justify-around px-2 py-2">
             <MobileNavLinks />
 
         </div>

@@ -5,7 +5,5 @@ from django.contrib.auth.admin import UserAdmin
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('phone_number',)}),
-    )
+    fieldsets = UserAdmin.fieldsets 
 admin.site.register(Profile)

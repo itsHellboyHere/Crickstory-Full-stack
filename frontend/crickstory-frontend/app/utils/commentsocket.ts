@@ -1,6 +1,6 @@
 export function connectCommentSocket(postId: number): WebSocket {
   
-    const socket = new WebSocket(`ws://localhost/ws/posts/${postId}/comments/`);
+    const socket = new WebSocket(`ws://localhost:8000/ws/posts/${postId}/comments/`);
   
     socket.onopen = () => {
       console.log(`✅ WebSocket connected for post ${postId}`);

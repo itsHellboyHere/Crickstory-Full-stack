@@ -6,8 +6,17 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+--snowflake-a0: oklab(98.9% 0.005 0.002);
+--snowflake-a10: oklab(96.1% 0 0);
+--snowflake-a20: oklab(92.5% 0 0);
+--snowflake-a30: oklab(88.5% 0 0);
+--snowflake-a40: oklab(84.5% 0 0);
 }
 
+
+.my-iced-bg {
+  background-color: var(--snowflake-a10);
+}
 
 /* 
 @media (prefers-color-scheme: dark) {
@@ -20,6 +29,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  
   /* font-family: Arial, Helvetica, sans-serif; */
 }
 
@@ -82,3 +92,5 @@ body {
   );
   transition: all 0.475s;
 }
+
+

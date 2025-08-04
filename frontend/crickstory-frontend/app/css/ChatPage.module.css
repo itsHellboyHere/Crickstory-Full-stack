@@ -1,0 +1,21 @@
+.chatPage {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 350px;
+  border-right: 1px solid #ddd;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.startNewSection {
+  margin-top: 20px;
+}

@@ -82,7 +82,7 @@ export default function HomeGridComponent() {
             </div>
             <div className={styles.item7}>
                 {/* <button className={styles.buttonshine}># legends</button> */}
-                <h2 className="font-bold text-zinc-50 opacity-80 from-dark-600 to-dark-700  z-[1] text-sm md:text-2xl">cricket <span className={`${styles.changetext} text-blue-400`}></span></h2>
+                <h2 className="font-bold text-zinc-50 opacity-80 from-dark-600 to-dark-700  z-[1] text-sm md:text-2xl">sports <span className={`${styles.changetext} text-blue-400`}></span></h2>
 
             </div>
             <div className={styles.item8}>

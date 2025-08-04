@@ -1,0 +1,19 @@
+.userList {
+  list-style: none;
+  padding: 0;
+}
+
+.userList li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 5px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}

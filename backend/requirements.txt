@@ -16,4 +16,5 @@ channels
 channels_redis
 daphne
 django-taggit
+typesense
 

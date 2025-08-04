@@ -7,8 +7,8 @@ import { AuthProvider } from "./context/AuthContext";
 import { FollowProvider } from "./context/FollowContext";
 import { NotificationProvider } from "./context/NotificationContext";
 import StoreProvider from "./StoreProvider";
-
-
+import ReactQueryProvider from "./ReactQueryProvider";
+import RouteProgress from "./components/RouteProgress";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -37,7 +37,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
             <AuthProvider>
               <NotificationProvider>
-                <FollowProvider>{children}</FollowProvider>
+                <FollowProvider>
+                  <RouteProgress />
+                  <ReactQueryProvider>
+                    {children}
+                  </ReactQueryProvider>
+                </FollowProvider>
               </NotificationProvider>
               <Toaster position="top-center" />
             </AuthProvider>

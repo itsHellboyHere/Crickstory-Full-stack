@@ -12,7 +12,7 @@ export default function LikeButton({
     initialLikes: number;
     isLiked: boolean;
 }) {
-    const [likes, setLikes] = useState(initialLikes);
+    const [likes, setLikes] = useState(initialLikes ?? 0);
     const [isLiked, setIsLiked] = useState(initialIsLiked);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();

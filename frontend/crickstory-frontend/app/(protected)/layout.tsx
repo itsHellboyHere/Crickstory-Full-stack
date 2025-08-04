@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import CricketLoader from '../components/CrickLoader';
 import ScoreboardLoader from '../components/ScoreLoader';
-import SideNav from '../ui/posts/sidenav';
+
 import DeskTopSideNav from '../ui/desktop-sidenav';
 import MobileSideNav from '../ui/posts/mobile-sidenav';
 import clsx from 'clsx';
@@ -52,7 +52,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Main content */}
-      <div className="flex-grow pt-14 p-0 md:overflow-y-auto scroll-smooth md:p-0">
+      <div className="flex-grow pt-14  p-0 md:overflow-y-auto scroll-smooth md:p-0">
         {children}
       </div>
     </div>

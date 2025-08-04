@@ -5,7 +5,8 @@ import {
     HomeIcon,
     BellIcon,
     PlusIcon,
-    UserIcon
+    UserIcon,
+    MagnifyingGlassIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -22,6 +23,7 @@ const links = [
         href: '/posts/create',
         icon: PlusIcon
     },
+    { name: 'Search', href: '/search', icon: MagnifyingGlassIcon },
 
     //   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
 ];

@@ -57,6 +57,8 @@ urlpatterns = [
     path('api/posts/',include('comments.urls'),name='comments'),
     path('api/user/',include('follow.urls'),name='follow'),
     path('api/notifications/', include('notifications.urls')),
+    path('api/chat/',include('chat.urls')),
+    path('api/search/',include('search.urls'))
 
 
 ]+static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

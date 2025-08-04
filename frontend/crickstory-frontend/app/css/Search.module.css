@@ -1,0 +1,155 @@
+.searchTitle{
+    font-size: 1.5rem;
+    font-weight: 500;
+    /* text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); */
+    opacity: 0.9;
+    animation: fadeIn 1.2s ease-out;
+    margin-bottom: 1rem;
+}
+
+
+
+.searchBox {
+    position: relative;
+    background: white;
+    /* padding: 0.5rem; */
+    transition: all 0.3s ease;
+}
+
+
+.searchInput {
+  width: 100%;
+  position: relative;
+  padding: 1rem 0.75rem 0.75rem;
+  font-size: 1rem;
+  background: white;
+  border: 2px solid #ccc;
+  border-radius: 0.75rem;
+  
+}
+
+.searchInput:focus {
+  outline: none;
+  border-image: linear-gradient(to right, #4facfe, #00f2fe);
+  border-image-slice: 1;
+  box-shadow: 0 0 8px rgba(79, 172, 254, 0.6);
+}
+
+.floatingLabel {
+  position: absolute;
+  left: 0.75rem;
+  top: 1rem;
+  color: #666;
+  font-size: 1rem;
+  background: white;
+  padding: 0 0.30rem;
+  pointer-events: none;
+  transition: all 0.2s ease-out;
+}
+
+.searchInput:focus + .floatingLabel,
+.searchInput:not(:placeholder-shown) + .floatingLabel {
+  top: 0.25rem;
+  font-size: 0.70rem;
+  color: #4facfe;
+}
+
+
+
+.searchResultsCard {
+  max-height: calc(100vh - 160px); /* Adjust depending on top offset (search bar + spacing) */
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  scroll-behavior: smooth;
+}
+
+.searchResultsCard::-webkit-scrollbar {
+  width: 6px;
+}
+
+.searchResultsCard::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.searchResultsCard::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.card {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+  margin-bottom: 0.5rem;
+  animation: fadeIn 0.4s linear;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(120deg, rgba(255,255,255,0.3), rgba(255,255,255,0));
+  transform: rotate(25deg);
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.avatar {
+  border-radius: 9999px;
+  object-fit: cover;
+  margin-right: 1rem;
+}
+
+.userInfo {
+  flex-grow: 1;
+}
+
+.name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.username {
+  font-size: 0.875rem;
+  color: #888;
+}
+.followCount{
+  font-size: 0.80rem;
+  font-weight: 400;
+}
+
+.postSearchCard {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.071) 0%,
+    rgba(168, 120, 120, 0.941) 100%
+  );
+  border-radius: 1rem;
+  padding: 1rem;
+  /* border: 1px solid rgba(255, 255, 255, 0.2); */
+  backdrop-filter: blur(20px) saturate(150%);
+  
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
+  transition: transform 0.2s ease;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 0.9; transform: translateY(0); }
+  }
