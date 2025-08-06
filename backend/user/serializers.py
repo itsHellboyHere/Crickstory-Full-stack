@@ -13,12 +13,13 @@ from allauth.account import app_settings as allauth_account_settings
 User = get_user_model()
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', required=False)
+    user_id = serializers.IntegerField(source='user.id', read_only=True)
     is_following = serializers.SerializerMethodField()
     has_requested = serializers.SerializerMethodField()
     is_me = serializers.SerializerMethodField()
     class Meta:
         model = Profile
-        fields = ['username', 'name', 'bio', 'location', 'birth_date', 'image','is_private','is_following', 'has_requested', 'is_me','phone_number']
+        fields = ['user_id','username', 'name', 'bio', 'location', 'birth_date', 'image','is_private','is_following', 'has_requested', 'is_me','phone_number']
         extra_kwargs = {
             'image': {'required': False, 'allow_null': True},
             'birth_date': {'required': False},

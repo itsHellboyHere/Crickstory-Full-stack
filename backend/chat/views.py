@@ -24,13 +24,13 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
     pagination_class = RoomPagination
 
     def get_queryset(self):
-        return Room.objects.filter(members=self.request.user).prefetch_related('members', 'messages')
+        return Room.objects.filter(members=self.request.user).prefetch_related('members', 'messages').order_by('-created_at')
 
     def create(self, request, *args, **kwargs):
         room_type = request.data.get('room_type')
         member_ids = request.data.get('members', [])
         name = request.data.get('name')
-
+        
         try:
             member_ids = list(map(int, member_ids))
         except (ValueError, TypeError):
@@ -38,14 +38,18 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
 
         if request.user.id not in member_ids:
             member_ids.append(request.user.id)
-
+        print("members ",member_ids)
         if room_type == "dm":
-                    # Self-DM
-            if len(member_ids) == 1 and member_ids[0] == request.user.id:
-                existing = Room.objects.filter(room_type="dm", members=request.user).annotate(count=models.Count('members')).filter(count=1).first()
-                if existing:
-                    return Response(RoomSerializer(existing, context={'request': request}).data)
-
+            # self dm
+            if len(set(member_ids)) == 1 and member_ids[0] == request.user.id:
+                # ✔️ More accurate self-DM detection
+                existing_rooms = Room.objects.filter(room_type="dm", members=request.user)
+                for room in existing_rooms:
+                    members = room.members.all()
+                    if members.count() == 1 and members.first().id == request.user.id:
+                        print("Existing self-dm found ",members)
+                        return Response(RoomSerializer(room, context={'request': request}).data)
+                print("no existing-mem of slef-dm found")
                 room = Room.objects.create(room_type="dm")
                 room.members.set([request.user.id])
                 return Response(RoomSerializer(room, context={'request': request}).data, status=201)
