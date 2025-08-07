@@ -9,12 +9,14 @@ import Image from 'next/image';
 import { RootState, AppDispatch } from '@/app/store/store';
 import { fetchPostsThunk, resetPosts } from '@/app/features/postsSlice';
 import { useAppDispatch, useAppSelector } from '@/app/store/hook';
+import { usePostFeedSocket } from '@/app/hooks/usePostFeedSocket';
 export default function PostsPage() {
     const dispatch = useAppDispatch();
     const { posts, status, nextCursor, hasMore } = useAppSelector((state: RootState) => state.posts)
     const { user } = useAuth();
     const loadMoreRef = useRef<HTMLDivElement>(null); // Ref for IntersectionObserver
 
+    usePostFeedSocket();
     const loadPosts = useCallback(() => {
         if (status === 'loading' || !hasMore) return;
         dispatch(fetchPostsThunk(nextCursor || undefined));

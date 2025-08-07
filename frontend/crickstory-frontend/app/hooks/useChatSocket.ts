@@ -17,7 +17,7 @@ type Message = {
   };
 };
 
-export default function useChatSocket(roomId: number) {
+export default function useChatSocket(roomId: number, onTyping?: (username: string | null) => void) {
   const socketRef = useRef<WebSocket | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -27,29 +27,43 @@ export default function useChatSocket(roomId: number) {
 
     socket.onmessage = (event) => {
       try {
-        const newMessage: Message = JSON.parse(event.data);
-        dispatch(addNewMessage(newMessage));
+        const data = JSON.parse(event.data);
+        if (data.type === "typing") {
+          onTyping?.(data.username); // show typing
+        } else if (data.type === "stop_typing") {
+          onTyping?.(null); // hide typing
+        } else {
+          dispatch(addNewMessage(data));
+        }
       } catch (err) {
-        console.error("Error parsing WebSocket message:", err);
+        console.error("WebSocket parse error:", err);
       }
     };
 
     return () => {
       socket.close();
     };
-  }, [roomId, dispatch]);
+  }, [roomId, dispatch, onTyping]);
 
-  const sendMessage = (payload: {
-    message: string;
-    message_type: string;
-    file_url?: string;
-  }) => {
+  const sendMessage = (payload: { message: string; message_type: string; file_url?: string }) => {
     if (socketRef.current?.readyState === WebSocket.OPEN) {
-      socketRef.current.send(JSON.stringify(payload));
-    } else {
-      console.warn("WebSocket not open, message not sent");
+      socketRef.current.send(JSON.stringify({ ...payload, type: "message" }));
     }
   };
 
-  return { sendMessage };
+  const sendTyping = () => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({ type: "typing" }));
+    }
+  };
+
+  const sendStopTyping = () => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      socketRef.current.send(JSON.stringify({ type: "stop_typing" }));
+    }
+  };
+
+  return { sendMessage, sendTyping, sendStopTyping };
 }
+
+

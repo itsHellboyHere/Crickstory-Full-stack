@@ -6,6 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from .models import Follow,FollowRequest
+from posts.utils import send_recent_posts_to_new_follower
 from .serializers import (FollowSerializer,
 FollowerDetailSerializer,FollowingDetailSerializer
 ,UserBasicSerializer
@@ -49,12 +50,14 @@ class FollowUserAPIView(APIView):
                 if follow:
                     if not follow.is_active:
                         follow.follow() # reactivate
+                        send_recent_posts_to_new_follower(follow)
                 else:
-                    Follow.objects.create(
+                    follow=Follow.objects.create(
                            follower=request.user,
                     following=target,
                     is_active=True
                     )
+                    send_recent_posts_to_new_follower(follow)
 
                 # Send real-time notification
             send_follow_notification(to_user=target, from_user=request.user)
@@ -77,9 +80,10 @@ class AcceptFollowRequestAPIView(APIView):
             if follow:
                 if not follow.is_active:
                     follow.follow()
+                    send_recent_posts_to_new_follower(follow)
             else:
-                Follow.objects.create(follower=from_user, following=request.user, is_active=True)
-            
+                follow=Follow.objects.create(follower=from_user, following=request.user, is_active=True)
+                send_recent_posts_to_new_follower(follow)
             follow_request.delete()
             return Response({"success": "Request accepted."})
         except(User.DoesNotExist , FollowRequest.DoesNotExist):

@@ -13,7 +13,11 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
 
     return (
         <div className="flex h-screen">
-            <aside className="w-1/3 lg:w-1/4 border-r overflow-y-auto">
+            <aside className=" w-1/3 lg:w-1/4  overflow-y-auto"
+                style={{
+                    boxShadow: "rgba(3, 102, 214, 0.3) 0px 0px 0px 3px"
+                }}
+            >
                 {/* <ChatSidebar /> */}
                 <ChatSidebar />
             </aside>

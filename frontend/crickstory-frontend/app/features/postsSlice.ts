@@ -1,5 +1,5 @@
 
-import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Post,PostsResponse } from "@/types/next-auth";
 import axios from "@/app/utils/axios";
 interface PostsState {
@@ -44,9 +44,22 @@ const postsSlice = createSlice({
             state.nextCursor = null;
             state.hasMore = true;
         },
-        addNewPost: (state, action) => {
-      state.posts.unshift(action.payload);
+       addNewPost: (state, action) => {
+  const exists = state.posts.some(p => p.id === action.payload.id);
+  if (!exists) {
+    state.posts.unshift(action.payload);
+  }
+},
+    addMultiplePosts: (state, action: PayloadAction<Post[]>) => {
+      const newPosts = action.payload.filter(
+        (post:Post) => !state.posts.some((existing) => existing.id === post.id)
+      );
+      // Append and sort if needed
+      state.posts = [...newPosts, ...state.posts].sort((a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
     },
+
     },
     extraReducers:builder =>{
         builder
@@ -75,5 +88,5 @@ const postsSlice = createSlice({
     }
 })
 
-export const {resetPosts,addNewPost} = postsSlice.actions
+export const {resetPosts,addNewPost,addMultiplePosts} = postsSlice.actions
 export default postsSlice.reducer

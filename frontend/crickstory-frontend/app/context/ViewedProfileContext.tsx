@@ -4,6 +4,7 @@ import { createContext, useContext, useState } from "react"
 
 
 type ViewedProfile = {
+    user_id:number
     username: string
     image?: string
     name?: string

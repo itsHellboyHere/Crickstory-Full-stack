@@ -12,6 +12,7 @@ from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
 from follow.models import Follow
 from django.contrib.auth import get_user_model
+from .utils import broadcast_post_to_followers
 User=get_user_model()
 
 class CreatePostView(APIView):
@@ -57,6 +58,7 @@ class CreatePostView(APIView):
                 post.delete()  # Clean up partial post
                 return Response({"error": f"Cloudinary error: {str(e)}"}, status=500)
 
+        broadcast_post_to_followers(post)
         serialized_post = FullPostSerializer(post, context={'request': request})
         return Response(serialized_post.data, status=201)
 

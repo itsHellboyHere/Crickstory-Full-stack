@@ -6,7 +6,8 @@ import {
     BellIcon,
     PlusIcon,
     UserIcon,
-    MagnifyingGlassIcon
+    MagnifyingGlassIcon,
+    ChatBubbleOvalLeftEllipsisIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import clsx from 'clsx';
@@ -24,6 +25,7 @@ const links = [
         icon: PlusIcon
     },
     { name: 'Search', href: '/search', icon: MagnifyingGlassIcon },
+    { name: 'Chat', href: '/chat', icon: ChatBubbleOvalLeftEllipsisIcon }
 
     //   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
 ];

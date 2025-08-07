@@ -11,6 +11,7 @@ import { FollowModal } from './FollowModal'
 import { FollowRequestsModal } from './FollowRequestsModal'
 import axios from '@/app/utils/axios'
 import toast from 'react-hot-toast'
+import MessageButton from './chat/MessageButton'
 
 export default function ProfileHeader({ loading }: { loading: boolean }) {
     const { profile, updateProfile } = useViewedProfile()
@@ -99,29 +100,39 @@ export default function ProfileHeader({ loading }: { loading: boolean }) {
                 <div className="flex-1">
                     <div className="flex items-center gap-4 mb-2">
                         <h1 className="text-xl font-semibold">{profile.username}</h1>
+
                         {profile.is_me ? (
                             <>
                                 <Link href="/settings/profile">
                                     <Button>Edit Profile</Button>
                                 </Link>
                                 <Button onClick={() => setRequestsModalOpen(true)}>Follow Requests</Button>
+                                {/* ✅ Show Message button for self-DM*/}
+                                <MessageButton />
                             </>
-                        ) : profile.has_requested ? (
-                            <Button disabled className="bg-gray-400 text-white">
-                                Requested
-                            </Button>
                         ) : (
-                            <Button
-                                onClick={handleFollowToggle}
-                                className={
-                                    profile.is_following
-                                        ? 'bg-red-500 hover:bg-red-600 text-white'
-                                        : 'bg-blue-500 hover:bg-blue-600 text-white'
-                                }
-                            >
-                                {profile.is_following ? 'Unfollow' : 'Follow'}
-                            </Button>
+                            <>
+                                {profile.has_requested ? (
+                                    <Button disabled className="bg-gray-400 text-white">
+                                        Requested
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        onClick={handleFollowToggle}
+                                        className={
+                                            profile.is_following
+                                                ? 'bg-red-500 hover:bg-red-600 text-white'
+                                                : 'bg-blue-500 hover:bg-blue-600 text-white'
+                                        }
+                                    >
+                                        {profile.is_following ? 'Unfollow' : 'Follow'}
+                                    </Button>
+                                )}
+                                {/* ✅ Message button for non-self users */}
+                                <MessageButton />
+                            </>
                         )}
+
                     </div>
 
                     <p className="text-gray-500">{profile.name}</p>

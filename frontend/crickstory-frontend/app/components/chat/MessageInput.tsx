@@ -1,17 +1,42 @@
 'use client';
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import axios from "@/app/utils/axios";
 import useChatSocket from "@/app/hooks/useChatSocket";
+import debounce from "lodash/debounce";
 
 export default function MessageInput({ roomId }: { roomId: number }) {
     const [text, setText] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const [previewURL, setPreviewURL] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const { sendMessage } = useChatSocket(roomId);
+    const { sendMessage, sendTyping, sendStopTyping } = useChatSocket(roomId);
 
-    //  Create image preview URL when file changes
+
+    const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const isTypingRef = useRef(false);
+
+    const debouncedTyping = useMemo(() => debounce(() => {
+        sendTyping();
+        isTypingRef.current = true;
+    }, 500), [sendTyping]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setText(value);
+
+        if (!isTypingRef.current) {
+            debouncedTyping(); // sends typing
+        }
+
+        // reset stop-typing timeout
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = setTimeout(() => {
+            sendStopTyping();
+            isTypingRef.current = false;
+        }, 2000); // Stop typing after 2s of inactivity
+    };
+
     useEffect(() => {
         if (file && file.type.startsWith("image/")) {
             const objectUrl = URL.createObjectURL(file);
@@ -25,14 +50,12 @@ export default function MessageInput({ roomId }: { roomId: number }) {
     const handleSendText = () => {
         const trimmed = text.trim();
         if (!trimmed || loading) return;
-
         sendMessage({ message: trimmed, message_type: "text" });
         setText("");
     };
 
     const uploadFile = async () => {
         if (!file || loading) return;
-
         const form = new FormData();
         form.append("file", file);
         form.append("room_id", String(roomId));
@@ -60,7 +83,11 @@ export default function MessageInput({ roomId }: { roomId: number }) {
     };
 
     return (
-        <div className="flex flex-col gap-2 p-3 border-t bg-white w-full items-center">
+        <div className="flex flex-col gap-2 p-3 w-full items-center z-10"
+            style={{
+                boxShadow: " rgba(3, 102, 214, 0.3) 0px 0px 0px 3px"
+            }}
+        >
             {file && (
                 <div className="flex items-center gap-3 p-2 rounded-lg bg-gray-100 w-full max-w-xl relative">
                     {previewURL ? (
@@ -96,8 +123,14 @@ export default function MessageInput({ roomId }: { roomId: number }) {
                     className="flex-1 border px-3 py-2 rounded-2xl outline-none"
                     placeholder="Type a message"
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={handleChange}
                     disabled={loading}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSend();
+                        }
+                    }}
                 />
 
                 <label className="px-3 py-2 bg-gray-200 text-sm rounded-2xl cursor-pointer">

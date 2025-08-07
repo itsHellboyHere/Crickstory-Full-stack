@@ -16,14 +16,15 @@ from channels.auth import AuthMiddlewareStack
 import notifications.routing
 import comments.routing
 import chat.routing  # delay this till now
-
+import posts.routing
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
             notifications.routing.websocket_urlpatterns +
             comments.routing.websocket_urlpatterns +
-            chat.routing.websocket_urlpatterns
+            chat.routing.websocket_urlpatterns +
+            posts.routing.websocket_urlpatterns
         )
     ),
 })

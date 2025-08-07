@@ -42,7 +42,7 @@ class RoomListCreateAPIView(generics.ListCreateAPIView):
         if room_type == "dm":
             # self dm
             if len(set(member_ids)) == 1 and member_ids[0] == request.user.id:
-                # ✔️ More accurate self-DM detection
+                #  More accurate self-DM detection
                 existing_rooms = Room.objects.filter(room_type="dm", members=request.user)
                 for room in existing_rooms:
                     members = room.members.all()

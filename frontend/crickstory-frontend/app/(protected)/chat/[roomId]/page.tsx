@@ -7,9 +7,8 @@ export default async function ChatRoomPage(props: { params: Promise<{ roomId: nu
     const { roomId } = await props.params
 
     return (
-        <div className="flex flex-col h-[90vh] ">
+        <div className="flex flex-col h-[92vh] md:h-[100vh]">
             <ChatHeader roomId={roomId} />
-
             <MessageList roomId={roomId} />
             <MessageInput roomId={roomId} />
         </div>

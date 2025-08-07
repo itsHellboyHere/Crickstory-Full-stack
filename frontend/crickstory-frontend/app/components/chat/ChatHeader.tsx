@@ -42,7 +42,7 @@ export default function ChatHeader({ roomId }: { roomId: number }) {
     }, [roomId]);
 
     if (loading) {
-        return <div className="h-14 w-full bg-gray-100 animate-pulse" />;
+        return <div className="h-17 w-full bg-gray-100 animate-pulse" />;
     }
 
     const isGroup = data.room_type === 'group';
@@ -58,7 +58,7 @@ export default function ChatHeader({ roomId }: { roomId: number }) {
         : otherMember?.image;
 
     return (
-        <div className="p-4 border-b bg-white shadow-sm sticky top-0 z-10 flex items-center space-x-3">
+        <div className="px-3 py-3 mt-2  bg-white shadow-sm sticky top-0 z-10 flex items-center space-x-3 md:ml-1 md:mt-0">
             {avatar ? (
                 <div className="relative w-10 h-10">
                     <Image

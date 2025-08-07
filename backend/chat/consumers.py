@@ -89,6 +89,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "user_id":event["user_id"],
             "username":event["username"],
         }))
+        
     async def user_stop_typing(self, event):
         await self.send(text_data=json.dumps({
             "type": "stop_typing",

@@ -23,7 +23,7 @@ export default function LikeButton({
         try {
             const res = await axios.post(`/api/posts/${postId}/like/`);
             const { liked, total_likes = 0 } = res.data;
-            console.log(res.data)
+            // console.log(res.data)
             setIsLiked(liked);
             setLikes(total_likes);
 
@@ -32,7 +32,7 @@ export default function LikeButton({
             setIsLoading(false);
         }
     };
-    console.log("likes ", likes)
+    // console.log("likes ", likes)
     const renderLikeText = () => {
         if (likes === 0) return "Be the first to like this";
         if (isLiked && likes === 1) return "Liked by you";

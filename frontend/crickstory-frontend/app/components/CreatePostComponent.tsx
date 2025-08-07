@@ -201,7 +201,7 @@ const CreatePost: React.FC = () => {
             const newPost = res.data;
             console.log("post-res ", res.data)
             toast.success('Post created successfully!');
-            dispatch(addNewPost(newPost));
+            // dispatch(addNewPost(newPost));
             router.push('/posts');
         } catch (error) {
             console.error('Upload failed:', error);
